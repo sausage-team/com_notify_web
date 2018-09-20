@@ -1,0 +1,289 @@
+.header {
+  width: 100%;
+  height: 64px;
+  background: linear-gradient(90deg, $header-lg-bg-l 0%, $header-lg-bg-r 100%);
+  display: flex;
+
+  .header-left {
+    width: 200px;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid $header-left-bo;
+
+    .header-left-img {
+      width: 40px;
+      height: 40px;
+      @include login-logo;
+      margin: 0 8px 0 12px;
+    }
+
+    .header-left-title {
+      color: $text-color;
+
+      .title-item1 {
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 600;
+      }
+
+      .title-item2 {
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+  }
+
+  .header-center {
+    width: calc(100% - (200px + 184px));
+    height: 100%;
+    &.long{
+      width: calc(100% - (200px + 84px));
+    }
+
+    .header-center-inner {
+      position: relative;
+      height: 100%;
+      text-align: center;
+      overflow: hidden;
+
+      .layer-left {
+        position: absolute;
+        width: 73px;
+        height: 64px;
+        left: 0px;
+        z-index: 100;
+        @include header-layer-left;
+      }
+
+      .layer-right {
+        position: absolute;
+        width: 73px;
+        height: 64px;
+        right: 0px;
+        @include header-layer-left;
+        z-index: 100;
+      }
+
+      .header-nav {
+        height: 100%;
+        line-height: 64px;
+        padding: 16px 0 0 0;
+        margin-left: 20px;
+        transition: all 0.3s ease;
+
+        li {
+          position: relative;
+          float: left;
+          width: 136px;
+          height: 32px;
+          line-height: 32px;
+          margin-right: 8px;
+          cursor: pointer;
+          border-radius: 16px;
+          border: 1px solid $header-item-bo;
+          color: $text-color;
+          box-shadow: 0px 0px 8px $header-item-sh;
+
+          &:hover {
+            box-shadow: 0px 8px 16px $header-item-h-sh;
+          }
+
+          &.li-select {
+            background-color: $header-item-s-bg;
+            color: $header-item-s-text;
+          }
+
+          &.inner-title:hover {
+            background-color: $header-item-s-bg;
+            color: $header-item-s-text;
+          }
+
+        }
+
+        .count {
+          position: absolute;
+          border-radius: 10px;
+          background-color: $header-count-bg;
+          color: $header-count-c;
+          top: -6px;
+          right: -6px;
+          width: 20px;
+          height: 20px;
+          line-height: 20px;
+        }
+      }
+    }
+  }
+
+  .header-right {
+    position: relative;
+    width: 184px;
+    height: 100%;
+    background-color: $header-right-button-bg;
+    color: $text-color;
+    display: flex;
+    &.short {
+      width: 84px;
+    }
+
+    .header-right-button {
+      width: 100px;
+      height: 100%;
+      display: flex;
+      padding: 0 16px;
+      justify-content: space-between;
+      align-items: center;
+      &.only-one {
+        justify-content: center;
+      }
+    }
+
+    .header-right-button-left,
+    .header-right-button-right {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      background-color: $header-button-bg;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0px 0px 8px $header-item-sh;
+      cursor: pointer;
+      &:hover {
+        box-shadow: 0px 8px 16px $header-item-h-sh;
+      }
+
+       i {
+         display: block;
+         width: 7px;
+         height: 10px;
+
+         &.arrow-left {
+           @include arrow-left;
+         }
+         &.arrow-right {
+           @include arrow-right;
+         }
+       }
+
+       
+      
+    }
+
+    .header-right-setting {
+      text-align: center;
+      width: 84px;
+      height: 16px;
+      margin: 24px 0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .bor-seq {
+        position: absolute;
+        left: 0;
+        height: 16px;
+        width: 1px;
+        background-color: rgba(255, 255, 255, 0.16);
+      }
+
+      .audio-on {
+        width: 16px;
+        height: 16px;
+        @include voice-on;
+        cursor: pointer;
+      }
+
+      .audio-off {
+        width: 16px;
+        height: 16px;
+        @include voice-off;
+        cursor: pointer;
+      }
+
+      .setting-icon {
+        width: 16px;
+        height: 16px;
+        margin-left: 16px;
+        @include head-setting;
+        cursor: pointer;
+      }
+
+      img:hover {
+        opacity: 0.72;
+      }
+    }
+  }
+
+  .setting {
+    position: relative;
+    .setting-content {
+      position: absolute;
+      right: 18px;
+      top: 48px;
+      width: 106px;
+      z-index: 999;
+      border-radius: 8px;
+      box-shadow: 0 0 8px 4px rgba(16, 48, 102, 0.12);
+      background-color: #fff;
+      color: rgba(10, 18, 33, 0.64);
+
+      .setting-line {
+        padding-left: 12px;
+        height: 44px;
+        line-height: 44px;
+        border-bottom: 1px solid rgba(10, 19, 33, 0.12);
+      }
+
+      li {
+        &:nth-child(1) {
+          height: 44px;
+          display: flex;
+          .user {
+            width: 22px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .user-icon {
+              display: block;
+              @include user-icon;
+              width: 22px;
+              height: 22px;
+            }
+          }
+          .title {
+            width: 55px;
+            height: 100%;
+            line-height: 44px;
+            margin-left: 9px;
+          }
+        }
+        &:nth-child(2) {
+          padding: 0 16px;
+          height: 32px;
+          line-height: 32px;
+          cursor: pointer;
+        }
+        &:nth-child(3) {
+          margin-left: 8px;
+          width: 90px;
+          height: 4px;
+        }
+        &:nth-child(4) {
+          padding: 0 16px;
+          margin-top: 4px;
+          height: 32px;
+          line-height: 32px;
+          margin-bottom: 8px;
+          cursor: pointer;
+        }
+      }
+
+      li:not(.setting-line):hover {
+        background-color: rgba(24, 43, 77, 0.08);
+      }
+    }
+  }
+}

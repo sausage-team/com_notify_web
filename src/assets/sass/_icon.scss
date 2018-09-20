@@ -1,0 +1,108 @@
+@mixin bg {
+  background: {
+    repeat: no-repeat;
+    position: center center;
+    size: cover;
+  }
+}
+
+@mixin icon {
+  background: {
+    repeat: no-repeat;
+    position: center center;
+    size: 100% 100%;
+  }
+}
+
+$root_url: '../imgs';
+
+@mixin login-bg {
+  @include bg;
+  background-image: url('#{$root_url}/bg.png');
+}
+
+@mixin login-logo {
+  @include icon;
+  background-image: url('#{$root_url}/logo.png');
+}
+
+@mixin header-layer-left {
+  @include icon;
+  background-image: url('#{$root_url}/header-layer-left.png');
+}
+
+@mixin header-layer-right {
+  @include icon;
+  background-image: url('#{$root_url}/header-layer-right.png');
+}
+
+@mixin arrow-left {
+  @include icon;
+  background-image: url('#{$root_url}/arrow-left.png');
+}
+
+@mixin arrow-right {
+  @include icon;
+  background-image: url('#{$root_url}/arrow-right.png');
+}
+
+@mixin user-icon {
+  @include icon;
+  background-image: url('#{$root_url}/ava.png');
+}
+
+@mixin voice-on {
+  @include icon;
+  background-image: url('#{$root_url}/vol-on.png');
+}
+
+@mixin voice-off {
+  @include icon;
+  background-image: url('#{$root_url}/vol-off.png');
+}
+
+@mixin head-setting {
+  @include icon;
+  background-image: url('#{$root_url}/setting.png');
+}
+
+@mixin arrow-double-left {
+  @include icon;
+  background-image: url('#{$root_url}/arrow-double-left.png');
+}
+
+@mixin arrow-double-right {
+  @include icon;
+  background-image: url('#{$root_url}/arrow-double-right.png');
+}
+
+@mixin close {
+  @include icon;
+  background-image: url('#{$root_url}/close.png');
+}
+
+@mixin refresh {
+  @include icon;
+  background-image: url('#{$root_url}/refresh.png');
+}
+
+@mixin arrow-dropmenu {
+  @include icon;
+  background-image: url('#{$root_url}/arrow-dropmenu.png');
+}
+
+@mixin arrow-upmenu {
+  @include icon;
+  background-image: url('#{$root_url}/arrow-upmenu.png');
+}
+
+@mixin plus {
+  @include icon;
+  background-image: url('#{$root_url}/plus.png');
+}
+
+@mixin minus {
+  @include icon;
+  background-image: url('#{$root_url}/minus.png');
+}
+
