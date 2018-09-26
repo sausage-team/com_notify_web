@@ -1,14 +1,14 @@
 <template>
   <div class="step-wrapper push-rule-page" v-show="stepCurrent == 2">
-    <div class="step step-3 clearfix mgb8" >
-      <div class="push-content mgb8">
-        <div class="fl mgr21">
-          <div class="fs12 fw color-0A1220 op-42 mgb8">设置此任务面向的用户组</div>
-          <div class="box-shadow-box push-content-class">
-            <div class="h37 bg-color-white">
-              <input type="text" placeholder="输入关键字进行过滤" v-model="filterText" class="mgt18 mgl24 input-reset" style="width: 88%">
+    <div class="step step-3 push-rule-main" >
+      <div class="push-content">
+        <div class="content-left">
+          <div class="left-up">设置此任务面向的用户组</div>
+          <div class="push-content-class left-down">
+            <div class="filter">
+              <input type="text" placeholder="输入关键字进行过滤" v-model="filterText" class="input-reset" style="width: 88%">
             </div>
-            <div class="h346 pdl24 pdr24 pdt14 border-b-1-grey bg-color-white  user-wrapper" >
+            <div class="user-wrapper down-select" >
 
               <el-tree
                 class="filter-tree"
@@ -33,114 +33,112 @@
             </div> -->
           </div>
         </div>
-        <div class="fl">
-          <div class="fs12 fw color-0A1220 op-42 mgb8">当下列条件满足时发送消息</div>
-          <div class="pdl15  pdt5 border-b-1-grey bg-color-white scroll-container box-shadow-box">
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="定向推送" name='1'>
-            <div class=" scroll-inner">
-              <ul class="step-3-ul">
-                <li class="h22 mgb8 pr" v-for="(item, index) in selectList" :key = 'index'>
-                  <div class="w100 h22">
-                    <el-select v-model="item.columns.fieldName" placeholder="请选择" @change="changeCondition2(item.columns.fieldName, index)">
-                      <el-option
-                        v-for="i in item.fieldString"
-                        :key="i.fieldName"
-                        :label="i.fieldDesc"
-                        :value="i.fieldName">
-                      </el-option>
-                    </el-select>
-                  </div>
-                  <div class="pdt2">等于</div>
-                  
-                  <el-dropdown trigger="click">
-                    <div class="w90 h22">
-                      <input type="text" placeholder="请输入内容" v-model="item.groupString"  @focus="showTree(index)" class="input-reset">
-                    </div>
-                    <el-dropdown-menu slot="dropdown">
-                      <div class="w215 pdl15">
-
-                        <el-input
-                          placeholder="输入关键字进行过滤"
-                          v-model="filterText2">
-                        </el-input>
+        <div class="content-mid">
+          <div class="mid-up">当下列条件满足时发送消息</div>
+          <div class="mid-down scroll-container">
+            <el-tabs v-model="activeName" @tab-click="handleClick">
+              <el-tab-pane label="定向推送" class="pane-1" name='1'>
+                <div class=" scroll-inner">
+                  <ul class="step-3-ul">
+                    <li v-for="(item, index) in selectList" :key = 'index'>
+                      <div class="choose">
+                        <el-select v-model="item.columns.fieldName" placeholder="请选择" @change="changeCondition2(item.columns.fieldName, index)">
+                          <el-option
+                            v-for="i in item.fieldString"
+                            :key="i.fieldName"
+                            :label="i.fieldDesc"
+                            :value="i.fieldName">
+                          </el-option>
+                        </el-select>
                       </div>
-                      <div class=" w230 h190 pdl16 pdr16 pdt8 tree-wrapper" style="overflow: auto">
-                        <el-tree
-                          class="filter-tree"
-                          :data="treeData"
-                          show-checkbox
-                          node-key="group_id"
-                          :check-strictly='true'
-                          :default-checked-keys="item.groupArray"
-                          :props="defaultProps"
-                          :filter-node-method="filterNode"
-                          :expand-on-click-node="false"
-                          @check-change="handleCheckChange2"
-                          ref="tree2">
-                          <span class="custom-tree-node" slot-scope="{ node, data }">
-                            <span>{{ node.label }}</span>
-                            <span>
-                              <img class="w16 h16 custom-tree-node-icon" src="@/assets/imgs/account-group.svg" alt="" @click="showPerson(node.data)">
-                            </span>
-                          </span>
-                        </el-tree>
-                      </div>
-                      <!-- <div class="pa w160 h30 lh30 pdl16 bg-color-white btn-wrapper">
-                        <div class="pa tree-btn clearfix w84">
-                          <div class="w30 h16 lh16 fs14 tac fr pointer fw btn" @click="cancelTree(index)">取消</div>
-                          <div class="w30 h16 lh16 fs14 tac fr pointer fw btn mgr24 color-2979FF " @click="saveTree(index)">确定</div>
+                      <div class="worth">等于</div>
+                      <el-dropdown trigger="click">
+                        <div class="input-con">
+                          <input type="text" placeholder="请输入内容" v-model="item.groupString"  @focus="showTree(index)" class="input-reset">
                         </div>
-                      </div> -->
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                  <div class="w16 h16 fs14 mgt2" @click="addSelectList" v-show="index == 0">
-                    <img class="w16 h16" src="@/assets/imgs/plus.png" alt="">
-                  </div>
-                  <div class="w16  fs14 mgt2" @click="minSelectList(index)" v-show="index != 0">
-                    <img class="w16 h16" src="@/assets/imgs/minus.png" alt="">
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="精准推送" name='2'>
-            <div class="h24 mgl15 mgb5">
-              <input type="text" placeholder="输入关键字进行过滤" v-model="filterText3" class="input-reset" style="padding-right: 145px;">
-            </div>
-            <div class="h160 pdl10 border-b-1-grey bg-color-white  user-wrapper" style="overflow: auto">  
-              <el-tree
-                class="filter-tree"
-                :data="treeData"
-                show-checkbox
-                node-key="group_id"
-                :check-strictly="true"
-                :default-checked-keys="checkedKeys3"
-                :props="defaultProps"
-                :filter-node-method="filterNode"
-                :expand-on-click-node="false"
-                @check-change="handleCheckChange2"
-                ref="tree3">
-                <span class="custom-tree-node" slot-scope="{ node, data }">
-                  <span>{{ node.label }}</span>
-                  <span>
-                    <img class="w16 h16 custom-tree-node-icon" src="@/assets/imgs/account-group.svg" alt="" @click="showPerson(node.data)">
-                  </span>
-                </span>
-              </el-tree>
-            </div>
-          </el-tab-pane>
-        </el-tabs>           
+                        <el-dropdown-menu slot="dropdown">
+                          <div class="fliter">
+                            <el-input
+                              placeholder="输入关键字进行过滤"
+                              v-model="filterText2">
+                            </el-input>
+                          </div>
+                          <div class="tree-wrapper" style="overflow: auto">
+                            <el-tree
+                              class="filter-tree"
+                              :data="treeData"
+                              show-checkbox
+                              node-key="group_id"
+                              :check-strictly='true'
+                              :default-checked-keys="item.groupArray"
+                              :props="defaultProps"
+                              :filter-node-method="filterNode"
+                              :expand-on-click-node="false"
+                              @check-change="handleCheckChange2"
+                              ref="tree2">
+                              <span class="custom-tree-node" slot-scope="{ node, data }">
+                                <span>{{ node.label }}</span>
+                                <span>
+                                  <img class="custom-tree-node-icon" src="@/assets/imgs/account-group.svg" alt="" @click="showPerson(node.data)">
+                                </span>
+                              </span>
+                            </el-tree>
+                          </div>
+                          <!-- <div class="pa w160 h30 lh30 pdl16 bg-color-white btn-wrapper">
+                            <div class="pa tree-btn clearfix w84">
+                              <div class="w30 h16 lh16 fs14 tac fr pointer fw btn" @click="cancelTree(index)">取消</div>
+                              <div class="w30 h16 lh16 fs14 tac fr pointer fw btn mgr24 color-2979FF " @click="saveTree(index)">确定</div>
+                            </div>
+                          </div> -->
+                        </el-dropdown-menu>
+                      </el-dropdown>
+                      <div class="addSelect" @click="addSelectList" v-show="index == 0">
+                        <i></i>
+                      </div>
+                      <div class="minSelect" @click="minSelectList(index)" v-show="index != 0">
+                        <i></i>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="精准推送" class="pane-2" name='2'>
+                <div class="filter3">
+                  <input type="text" placeholder="输入关键字进行过滤" v-model="filterText3" class="input-reset" style="padding-right: 145px;">
+                </div>
+                <div class="user-wrapper" style="overflow: auto">
+                  <el-tree
+                    class="filter-tree"
+                    :data="treeData"
+                    show-checkbox
+                    node-key="group_id"
+                    :check-strictly="true"
+                    :default-checked-keys="checkedKeys3"
+                    :props="defaultProps"
+                    :filter-node-method="filterNode"
+                    :expand-on-click-node="false"
+                    @check-change="handleCheckChange2"
+                    ref="tree3">
+                    <span class="custom-tree-node" slot-scope="{ node, data }">
+                      <span>{{ node.label }}</span>
+                      <span>
+                        <img class="custom-tree-node-icon" src="@/assets/imgs/account-group.svg" alt="" @click="showPerson(node.data)">
+                      </span>
+                    </span>
+                  </el-tree>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
         </div>
-        </div>
-        <div class="fr">
-          <div class="fs12 fw color-0A1220 op-42 mgb8">当下列条件满足时发送消息</div>
-          <div class="box-shadow-box push-content-class">
-            <div class="fs12 pdt8 pdl16" style="background-color: white">用户标签选择</div>
-            <div class="h346 pdl16 pdr24 pdt14 border-b-1-grey bg-color-white user-label">
+        <div class="content-right">
+          <div class="right-up">当下列条件满足时发送消息</div>
+          <div class="right-down push-content-class">
+            <div class="user-choose">用户标签选择</div>
+            <div class="user-label">
               <ul class="step-3-ul">
-                <li class="pdb10 pr" v-for="(item, index) in userlabel.result" :key = 'index'>
-                  <div class="fs12 pdb8 op-42" v-text="item.name" style="background-color: white"></div>
+                <li v-for="(item, index) in userlabel.result" :key = 'index'>
+                  <div v-text="item.name"></div>
                   <Select v-model="dataModel[index]" :label-in-value='true' @on-change="userlabelChange($event, item)" multiple style="width:220px">
                     <Option v-for="i in item.childs" :value="i.id" :key="i.id">{{i.name}}</Option>
                   </Select>
@@ -152,14 +150,14 @@
       </div>
       <div></div>
     </div>
-     <div class="mgb8" >
-      <div class="fs12 h17 lh17 mgb8 fw color-0A1220 op-42">预警消息设置</div>
-      <div class="pdl24  pdt5 border-b-1-grey bg-color-white scroll-container box-shadow-box">
+    <div class="set-info" >
+      <div class="info-up">预警消息设置</div>
+      <div class="info-down scroll-container">
         <el-tabs v-model="activeName2" class="message-modal-page">
-          <el-tab-pane label="默认" class="h50" name="0">
+          <el-tab-pane label="默认" class="pane-0" name="0">
             <div>您有一条预警消息，请注意查收！</div>
           </el-tab-pane>
-          <el-tab-pane label="自定义" class="h80" style="width: 95%" name="1">
+          <el-tab-pane label="自定义" class="pane-1" style="width: 95%" name="1">
             <el-input
               type="textarea"
               :rows="2"
@@ -169,11 +167,11 @@
               v-model="textUser1">
 
             </el-input>
-            <div class="h26 lh26 fs12 pdl8">
-              <div class="h24 lh24 fw fr color-051021 op-34">最多支持200字输入</div>
+            <div class="pane-inp">
+              <div class="pane-text">最多支持200字输入</div>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="消息模板" class="h80" style="width: 95%" name="2">
+          <el-tab-pane label="消息模板" class="pane-2" style="width: 95%" name="2">
             <at :members="members">
               <!-- <el-input
                 type="textarea"
@@ -184,43 +182,43 @@
               </el-input> -->
               <div class="textarea-editor" :maxlength="200" @onkeyup="editorChange" contenteditable='true' ref='textUser2'></div>
             </at>
-            <div class="h26 lh26 fs12 pdl8">
-              <div class="h24 lh24 fw fr color-051021 op-34">输入空格后再输入'@'触发模版选择，最多支持200字输入</div>
+            <div class="pane-inp">
+              <div class="pane-text">输入空格后再输入'@'触发模版选择，最多支持200字输入</div>
             </div>
           </el-tab-pane>
         </el-tabs>
       </div>
     </div>
-    <div class="mgb8" >
-      <div class="fs12 h17 lh17 mgb8 fw color-0A1220 op-42">推送方式</div>
-      <ul class="h96 lh96 checked-list bg-color-white box-shadow-box">
-        <li class="fl h96 pdr50 pdl25 clearfix">
-          <el-checkbox class="fl h96" v-model="pushWeb" disabled></el-checkbox>
-          <div class="fl h96 pdt6">
-            <img class="w24 h24 mgl10 mgr8" src="@/assets/imgs/web.png" alt="">
+    <div class="push-ways" >
+      <div class="ways-header">推送方式</div>
+      <ul class="checked-list">
+        <li>
+          <el-checkbox v-model="pushWeb" disabled></el-checkbox>
+          <div class="image web">
+            <i></i>
           </div>
-          <div class="fl h96 ">Web端</div>
+          <div class="words">Web端</div>
         </li>
-        <li class="fl h96 pdr50 pdl25 clearfix">
-          <el-checkbox class="fl h96" v-model="pushMobile"></el-checkbox>
-          <div class="fl h96 pdt6">
-            <img class="w24 h24 mgl10 mgr8" src="@/assets/imgs/phone.png" alt="">
+        <li>
+          <el-checkbox v-model="pushMobile"></el-checkbox>
+          <div class="image phone">
+            <i></i>
           </div>
-          <div class="fl h96 ">手机App</div>
+          <div class="words">手机App</div>
         </li>
-        <li class="fl h96 pdr50 pdl25 clearfix">
-          <el-checkbox class="fl h96" v-model="pushSms"></el-checkbox>
-          <div class="fl h96 pdt6">
-            <img class="w24 h24 mgl10 mgr8" src="@/assets/imgs/message.png" alt="">
+        <li>
+          <el-checkbox v-model="pushSms"></el-checkbox>
+          <div class="image message">
+            <i></i>
           </div>
-          <div class="fl h96 ">手机短信</div>
+          <div class="words">手机短信</div>
         </li>
       </ul>
     </div>
-     <div class="mgb8" >
-      <div class="fs12 h17 lh17 mgb8 fw color-0A1220 op-42">推送时间设置</div>
-      <div class="pdl15  pdt5 border-b-1-grey bg-color-white scroll-container box-shadow-box">
-        <div class="h50 lh50">
+    <div class="push-time" >
+      <div class="time-header">推送时间设置</div>
+      <div class="time-body scroll-container">
+        <div class="time-tab">
           <el-date-picker
             v-model="date1"
             type="datetime"
@@ -246,9 +244,9 @@
         </div>
       </div>
     </div>
-    <div>
-      <div class="fl w74 h32 lh32 tac fs14 fw pointer border-radius-4 back-step color-051021 op-72" @click="backStep(-1)">上一步</div>
-      <div class="fr w74 h32 lh32 tac fs14 fw pointer border-radius-4 bg-color-2979FF color-white" @click="savePushRule">完成{{this.taskName ? '创建' : '编辑'}}</div>
+    <div class="push-rule-footer">
+      <div class="footer-left" @click="backStep(-1)">上一步</div>
+      <div class="footer-right" @click="savePushRule">完成{{this.taskName ? '创建' : '编辑'}}</div>
     </div>
     <Modal
       v-model="showPersonList"
@@ -256,7 +254,7 @@
       :mask-closable="false"
       @on-ok="pushPersonList"
       title="人员列表">
-      <div class="h310 w500 pdl10 border-b-1-grey bg-color-white  user-wrapper">  
+      <div class="h310 w500 pdl10 border-b-1-grey bg-color-white  user-wrapper">
         <el-transfer
           filterable
           :filter-method="filterUser"
@@ -287,9 +285,9 @@ export default {
       getUserPortraits().then(res => {
         this.userlabel = res.data
         res.data.result.forEach((item, index) => {
-          this.dataModel.push('model'+item.id)
+          this.dataModel.push('model' + item.id)
         })
-      });
+      })
       this.showCondition()
       if (val === 2) {
         if (this.taskName) {
@@ -299,16 +297,16 @@ export default {
         }
       }
     },
-    filterText(val) {
+    filterText (val) {
       this.$refs.tree.filter(val)
     },
-    filterText2(val) {
+    filterText2 (val) {
       this.$refs.tree2[0].filter(val)
     },
-    filterText3(val) {
+    filterText3 (val) {
       this.$refs.tree3.filter(val)
     },
-    filterText4(val) {
+    filterText4 (val) {
       this.$refs.tree4.filter(val)
     }
   },
@@ -316,18 +314,18 @@ export default {
   },
   data () {
     return {
-      userlabel:{},
+      userlabel: {},
       workList: {},
-      dataModel: [],//动态生成用户标签绑定modal
-      workTblName:'',
+      dataModel: [], // 动态生成用户标签绑定modal
+      workTblName: '',
       textUser1: '',
       textUser2: '',
       taskName: this.$route.query.taskName, // 任务名称
-      dateTip: '', //推送时间提示
+      dateTip: '', // 推送时间提示
       treeData: [],
       treeData2: [],
-      showPersonList: false, //人员列表弹窗
-      checkedUser: [], //已选用户
+      showPersonList: false, // 人员列表弹窗
+      checkedUser: [], // 已选用户
       defaultProps: {
         children: 'sub',
         label: 'group_name'
@@ -355,32 +353,32 @@ export default {
       indexTree: 0,
       textarea: '',
       textarea2: '',
-      portrait: [], //用户标签
-      portraitList: {}, //用户标签仓库
+      portrait: [], // 用户标签
+      portraitList: {}, // 用户标签仓库
       sendMessage: {
         type: 0,
         messageContent: '',
         messageBody: [{type: 0, key: '', value: ''}]
-      },//推送消息设置
+      }, // 推送消息设置
       pickerOptions: {
         shortcuts: [{
           text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date());
+          onClick (picker) {
+            picker.$emit('pick', new Date())
           }
         }, {
           text: '昨天',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24);
-            picker.$emit('pick', date);
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
           }
         }, {
           text: '一周前',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', date);
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
           }
         }]
       },
@@ -393,7 +391,7 @@ export default {
           fieldName: '',
           fieldType: '',
           fieldValue: {
-            groupList:[],
+            groupList: [],
             userList: []
           }
         },
@@ -427,7 +425,7 @@ export default {
             fieldName: '',
             fieldType: '',
             fieldValue: {
-              groupList:[],
+              groupList: [],
               userList: []
             }
           },
@@ -437,30 +435,29 @@ export default {
         this.$emit('queryTaskFields', 1, this.taskId)
       }).catch(() => {
         this.$message({
-         
-         type: 'info',
+          type: 'info',
           message: '已取消删除'
         })
       })
     },
     editorChange (value) {
       console.log(value)
-    }, 
+    },
     handleClick () {
-      this.$refs.tree2.forEach((item => {
+      this.$refs.tree2.forEach(item => {
         item.setCheckedNodes([])
-      }))
+      })
       this.$refs.tree3.setCheckedNodes([])
       this.checkedKeys3 = []
       this.pushTargets = []
-      this.selectList = [{ 
+      this.selectList = [{
         fieldString: JSON.parse(JSON.stringify(this.fieldString)),
         columns: {
           fieldDesc: '',
           fieldName: '',
           fieldType: '',
           fieldValue: {
-            groupList:[],
+            groupList: [],
             userList: []
           }
         },
@@ -468,35 +465,34 @@ export default {
         groupString: ''
       }]
     },
-    //改变日期时动作
+    // 改变日期时动作
     changeDate () {
-      if(this.date1 && this.date2) {
-        if(this.date2 > this.date1) {
+      if (this.date1 && this.date2) {
+        if (this.date2 > this.date1) {
           this.dateTip = `推送时间范围为${this.timestampToTime(this.date1)}至 ${this.timestampToTime(this.date2)}`
-        }else{
+        } else {
           this.dateTip = '结束时间必须大于开始时间'
         }
-      }else if(this.date1 && !this.date2) {
+      } else if (this.date1 && !this.date2) {
         this.dateTip = `推送时间范围为${this.timestampToTime(this.date1)}之后`
-      }else if(!this.date1 && this.date2) {
+      } else if (!this.date1 && this.date2) {
         this.dateTip = `推送时间范围为${this.timestampToTime(this.date2)}之前`
-
-      }else {
+      } else {
         this.dateTip = ''
       }
     },
-    //时间戳转化为格式化时间
-    timestampToTime(timestamp) {
-        let date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-        let Y = date.getFullYear() + '-';
-        let M = (date.getMonth()+1 < 10 ? '0'+ (date.getMonth()+1) : date.getMonth()+1) + '-';
-        let D = (date.getDate()+1 < 10 ? '0'+ date.getDate() : date.getDate()) + ' ';
-        let h = (date.getHours()+1 < 10 ? '0'+ date.getHours() : date.getHours()) + ':';
-        let m = (date.getMinutes()+1 < 10 ? '0'+ date.getMinutes() : date.getMinutes()) + ':';
-        let s = (date.getSeconds()+1 < 10 ? '0'+ date.getSeconds() : date.getSeconds());
-        return Y+M+D+h+m+s;
+    // 时间戳转化为格式化时间
+    timestampToTime (timestamp) {
+      let date = new Date(timestamp) // 时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear() + '-'
+      let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+      let D = (date.getDate() + 1 < 10 ? '0' + date.getDate() : date.getDate()) + ' '
+      let h = (date.getHours() + 1 < 10 ? '0' + date.getHours() : date.getHours()) + ':'
+      let m = (date.getMinutes() + 1 < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':'
+      let s = (date.getSeconds() + 1 < 10 ? '0' + date.getSeconds() : date.getSeconds())
+      return Y + M + D + h + m + s
     },
-    //模版消息@弹出模版
+    // 模版消息@弹出模版
     // showModal (value) {
     //   // if(value.includes('@'))
     //   // {
@@ -527,13 +523,13 @@ export default {
           })
           this.dataModel[index] = modalArr
         })
-        if(this.activeName2 == 1){
+        if (this.activeName2 === 1) {
           this.textUser1 = res.data.result.sendMessage.messageBody[0].value
-        }else if(this.activeName2 == 2){
+        } else if (this.activeName2 === 2) {
           this.$refs.textUser2.innerText = res.data.result.sendMessage.messageContent
         }
         this.pushTargets.forEach((item, index) => {
-          if(this.activeName == 1){
+          if (this.activeName === 1) {
             let temp = []
             if (index !== 0) {
               this.addSelectList()
@@ -547,8 +543,7 @@ export default {
               this.userListTmp.push(i)
             })
             this.selectList[index].groupString = temp.join('; ')
-          }
-          else{
+          } else {
             this.selectList[index].columns = item
             item.fieldValue.groupList.forEach((item) => {
               this.checkedKeys3.push(item.groupId)
@@ -567,12 +562,12 @@ export default {
         this.getGroupList()
       })
     },
-    //改变用户标签
+    // 改变用户标签
     userlabelChange (value, item) {
       let userArr = []
       value.forEach((i) => {
-        let userTmp = {id:'', pid: '', name: ''}
-        userTmp.name = i.label 
+        let userTmp = {id: '', pid: '', name: ''}
+        userTmp.name = i.label
         userTmp.id = i.value
         userTmp.pid = item.id
         userArr.push(userTmp)
@@ -588,7 +583,7 @@ export default {
           fieldName: '',
           fieldType: '',
           fieldValue: {
-            groupList:[],
+            groupList: [],
             userList: []
           }
         },
@@ -608,7 +603,7 @@ export default {
         console.log(error)
       })
     },
-    //查询用户组成员
+    // 查询用户组成员
     getGroupUsers (groupId) {
       getGroupUsers({groupId: groupId}).then(res => {
         this.treeData2 = res.data.result
@@ -648,8 +643,8 @@ export default {
     },
     // 查询数据表预览
     getWorkPreview (workTblName, workTblDesc, index) {
-      this.workTblName = workTblName ? workTblName : this.workTblName
-      this.workTblDesc = workTblDesc ? workTblDesc : this.workTblDesc
+      this.workTblName = workTblName || this.workTblName
+      this.workTblDesc = workTblDesc || this.workTblDesc
       this.workListIndex = index !== undefined ? index : this.workListIndex
       let params = {
         workTblName: this.workTblName
@@ -669,9 +664,9 @@ export default {
       if (!value) return true
       return data.group_name.indexOf(value) !== -1
     },
-    //用户搜索
+    // 用户搜索
     filterUser (query, item) {
-      return item.name.indexOf(query) > -1;
+      return item.name.indexOf(query) > -1
     },
     // 用户组选中
     handleCheckChange (data, checked, indeterminate) {
@@ -693,18 +688,17 @@ export default {
       }
       console.log(this.viewGroups)
     },
-    //用户变化时
+    // 用户变化时
     changePersonList (data) {
       this.checkedUser = data
     },
-    //push用户
+    // push用户
     pushPersonList () {
       let tempList = []
-      
       let sl = this.selectList[this.indexTree]
       this.checkedUser.forEach((item, index) => {
         this.treeData2.forEach((i, k) => {
-          if(item == i.user_id){
+          if (item === i.user_id) {
             tempList.push(i)
           }
         })
@@ -737,7 +731,7 @@ export default {
       this.popTree = index
       this.indexTree = index
     },
-    //显示用户组人员
+    // 显示用户组人员
     showPerson (data) {
       this.getGroupUsers(data.group_id)
     },
@@ -785,31 +779,31 @@ export default {
         rulesCount += item.columns.fieldValue.groupList.length
         rulesCount += item.columns.fieldValue.userList.length
       })
-      for(let index in this.portraitList) {
-        this.portrait.push({"name": index,
-        "id": this.portraitList[index].id,
-        "childs": this.portraitList[index].childs})
+      for (let index in this.portraitList) {
+        this.portrait.push({'name': index,
+          'id': this.portraitList[index].id,
+          'childs': this.portraitList[index].childs})
       }
-      if(this.viewGroups.groupList.length == 0){
+      if (this.viewGroups.groupList.length === 0) {
         this.$message({
           type: 'info',
           message: '面向用户组为必选项'
         })
         return
-      }else if(rulesCount == 0){
+      } else if (rulesCount === 0) {
         this.$message({
           type: 'info',
           message: '推送对象为必选项'
         })
         return
-      }else if(this.date1 == null && this.date2 == null){
+      } else if (this.date1 == null && this.date2 == null) {
         this.$message({
           type: 'info',
           message: '推送时间为必选项'
         })
         return
-      }else if(this.date1 && this.date2) {
-        if(this.date2 < this.date1) {
+      } else if (this.date1 && this.date2) {
+        if (this.date2 < this.date1) {
           this.$message({
             type: 'info',
             message: '结束时间必须大于开始时间'
@@ -817,27 +811,27 @@ export default {
           return
         }
       }
-      if(this.activeName2 != 0){
-        if(this.activeName2 == 1){
-          this.sendMessage =  {
+      if (this.activeName2 !== 0) {
+        if (this.activeName2 === 1) {
+          this.sendMessage = {
             type: 1,
             messageContent: '',
             messageBody: [{type: 0, key: '', value: this.textUser1}]
           }
-        }else if(this.activeName2 == 2){
+        } else if (this.activeName2 === 2) {
           let msgArr = this.$refs.textUser2.innerText.split('@')
-          this.sendMessage =  {
+          this.sendMessage = {
             type: 2,
             messageContent: this.$refs.textUser2.innerText,
             messageBody: []
           }
           msgArr.forEach((item, index) => {
-            if(item != '' && index == 0){
-              this.sendMessage.messageBody.push({type: 0, key:'', value: item.trim()})
-            }else if(item != '') {
+            if (item !== '' && index === 0) {
+              this.sendMessage.messageBody.push({type: 0, key: '', value: item.trim()})
+            } else if (item !== '') {
               let markNum = item.indexOf(' ')
-              this.sendMessage.messageBody.push({type: 1, key: this.menberMap[item.substring(0,markNum)], value: item.substring(0,markNum)})
-              if(item.substring(markNum) != '' && item.substring(markNum) != ' '){
+              this.sendMessage.messageBody.push({type: 1, key: this.menberMap[item.substring(0, markNum)], value: item.substring(0, markNum)})
+              if (item.substring(markNum) !== '' && item.substring(markNum) !== ' ') {
                 this.sendMessage.messageBody.push({type: 0, key: '', value: item.substring(markNum).trim()})
               }
             }
@@ -879,134 +873,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-  .custom-tree-node {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 14px;
-      padding-right: 24px;
-  }
-  .custom-tree-node-icon {
-    display: none;
-  }
-  .custom-tree-node:hover {
-    .custom-tree-node-icon {
-      display: unset;
-    }
-  }
-  .textarea-editor {
-    width: 100%;
-    height: 54px;
-    overflow: auto;
-    white-space: pre-wrap;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #dcdfe6;
-    padding: .4em;
-    border-radius: 4px;
-    line-height: 1.5;
-    outline: none;
-  }
-  .textarea-editor:focus{
-    border: 1px solid rgba(41, 121, 255, 0.5);
-  }
-  .step-wrapper{
-    height: calc(100% - 100px);
-    .step{
-      min-width: 1024px;
-      height: calc(100% - 178px);
-    }
-    .step-3{
-      .push-content{
-        height: 100%;
-        &>div{
-          width: 32%;
-          height: 100%;
-          .push-content-class{
-            width: 100%;
-            height: calc(100% - 26px);
-            .user-wrapper{
-              overflow-x: scroll;
-              overflow-y: scroll;
-              height: calc(84%);
-              width: 100%;
-              input{
-                width: 100%;
-                height: 23px;
-              }
-            }
-            .user-label{
-              overflow: auto;
-              height: calc(88%);
-
-              width: 100%;
-              input{
-                width: 100%;
-                height: 23px;
-              }
-            }
-          }
-          .scroll-container{
-            width: 100%;
-            height: calc(100% - 26px);
-            overflow: hidden;
-            .scroll-inner{
-              width: 100%;
-              height: 175px;
-              overflow-y: auto;
-              overflow-x: hidden;
-              .step-3-ul{
-                input{
-                  width: 90px;
-                  height: 23px;
-                }
-                .box-shadow{
-                  box-shadow: 0px 0px 8px rgba(16, 48, 102, 0.03);
-                }
-                .box-shadow:hover{
-                  box-shadow: 0px 12px 24px rgba(16, 48, 102, 0.16);
-                }
-                li>div{
-                  float: left;
-                  margin-right: 8px;
-                }
-                .condition-tree{
-                  top: 23px;
-                  right: 48px;
-                  overflow: hidden;
-                  z-index: 3;
-                  /*padding-bottom: 40px;*/
-                  background-color: white;
-                  border-bottom: 1px solid rgba(5, 16, 33, 0.1);
-                  .tree-wrapper{
-                    overflow-y: auto;
-                  }
-                }
-                .btn-wrapper{
-                  bottom: 0px;
-                  left: 0px;
-                  z-index: 4;
-                  .tree-btn{
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                  }
-                }
-
-              }
-            }
-          }
-        }
-      }
-    }
-    .back-step:hover{
-      background-color: rgba(24, 43, 77, 0.05)
-    }
-  }
-
-
-</style>

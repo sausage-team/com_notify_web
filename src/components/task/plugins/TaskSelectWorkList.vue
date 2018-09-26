@@ -15,7 +15,7 @@
             <div class="step-right-title">
               <div class="title1">数据预览</div>
               <div class="title2">
-                <i @click="getWorkPreview()"></i> 
+                <i @click="getWorkPreview()"></i>
               </div>
               <div class="title3">显示最新 {{lastRecords}} 条数据，共 {{totalRecords}} 条数据 </div>
               <div class="title4"></div>
@@ -105,7 +105,7 @@
         </div>
       </div>
     </div>
-    <Button  type="primary"class="next-btn" @click="nextStep">下一步</Button>
+    <Button  type="primary" class="next-btn" @click="nextStep">下一步</Button>
   </div>
 </template>
 
@@ -260,15 +260,15 @@ export default {
     },
     // 查询数据表预览
     getWorkPreview (workTblName, workTblDesc, index, isSelect) {
-      if(isSelect && !this.taskName){
+      if (isSelect && !this.taskName) {
         this.$message({
           type: 'info',
           message: '编辑时不允许修改数据表'
         })
         return
       }
-      this.workTblName = workTblName ? workTblName : this.workTblName
-      this.workTblDesc = workTblDesc ? workTblDesc : this.workTblDesc
+      this.workTblName = workTblName || this.workTblName
+      this.workTblDesc = workTblDesc || this.workTblDesc
       this.workListIndex = index !== undefined ? index : this.workListIndex
       let params = {
         workTblName: this.workTblName
@@ -492,4 +492,3 @@ export default {
   }
 }
 </script>
-

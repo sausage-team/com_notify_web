@@ -105,3 +105,11 @@ export const closeSub = () => {
     client.disconnect();
   }
 }
+
+export const getNewMQTT = () => {
+  return new Paho.MQTT.Client(
+    '101.236.53.175',
+    8083,
+    'web_' + getCookie('userId')
+  )
+}

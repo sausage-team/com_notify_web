@@ -106,3 +106,41 @@ $root_url: '../imgs';
   background-image: url('#{$root_url}/minus.png');
 }
 
+@mixin text-icon {
+  @include icon;
+  background-image: url('#{$root_url}/type-string.png')
+}
+
+@mixin date-icon {
+  @include icon;
+  background-image: url('#{$root_url}/type-date.png')
+}
+
+@mixin detail-icon {
+  @include icon;
+  background-image: url('#{$root_url}/order.png');
+}
+
+@mixin message-icon {
+  @include icon;
+  background-image: url('#{$root_url}/message.png');
+}
+
+@mixin web-icon {
+  @include icon;
+  background-image: url('#{$root_url}/web.png');
+}
+
+@mixin phone-icon {
+  @include icon;
+  background-image: url('#{$root_url}/phone.png');
+}
+
+@mixin plus-icon {
+  @include icon;
+  background-image: url('#{$root_url}/plus.png');
+}
+@mixin minus-icon {
+  @include icon;
+  background-image: url('#{$root_url}/minus.png');
+}

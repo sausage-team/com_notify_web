@@ -14,7 +14,7 @@
                 :value="i.id">
               </el-option>
             </el-select>
-          </div>  
+          </div>
           <Button class="add-btn"  @click="popShow=true">新增任务</Button>
         </div>
         <div class="content-inner-table">
@@ -79,8 +79,8 @@
         </Modal>
       </div>
     </div>
-    
-    <div class="pop-bg" v-show="">
+    <!-- <div class="pop-bg" v-show=""> -->
+    <div class="pop-bg">
       <div class="w500 h335  pdl24 pdb12 bg-color-white box-shadow-box pop-window" >
         <div class="h48 lh48 fs14 mgb10 clearfix pop-title">
           <div class="fl fw">新建任务</div>
@@ -88,7 +88,6 @@
             <img class="w12 h12" src="@/assets/imgs/close.png" alt="">
           </div>
         </div>
-        
       </div>
     </div>
   </div>
@@ -231,9 +230,9 @@ export default {
       pageSize: 20, // 每页显示条数
       popShow: false,
       taskName: '', // 任务名称
-      taskDescribe: '',//任务描述
-      taskTypeId: -1, //任务类别ID，默认全部
-      taskTypeId2: 0, //新建时类型默认其他
+      taskDescribe: '', // 任务描述
+      taskTypeId: -1, // 任务类别ID，默认全部
+      taskTypeId2: 0, // 新建时类型默认其他
       options: [],
       options2: [],
       showDetail: false,
@@ -245,25 +244,25 @@ export default {
     }
   },
   created () {
-    this.getTaskTypekList();
-    this.getTaskList();
+    this.getTaskTypekList()
+    this.getTaskList()
   },
   mounted () {
-    this.tableWidth = document.getElementsByClassName('content')[0].clientWidth * 0.7;
+    this.tableWidth = document.getElementsByClassName('content')[0].clientWidth * 0.7
     this.$nextTick(() => {
-      this.tableHeight = document.getElementsByClassName('content-inner-table-inner')[0].clientHeight;
+      this.tableHeight = document.getElementsByClassName('content-inner-table-inner')[0].clientHeight
     })
   },
   methods: {
     // 分页查询
     changeList (pageNo) {
-      this.pageNo = pageNo;
-      this.getTaskList();
+      this.pageNo = pageNo
+      this.getTaskList()
     },
     // 分页总数改变查询
     changeListSize (pageSize) {
-      this.pageSize = pageSize;
-      this.getTaskList();
+      this.pageSize = pageSize
+      this.getTaskList()
     },
     // 查询表格数据
     getTaskList () {
@@ -275,9 +274,9 @@ export default {
       getTaskList(params).then(res => {
         this.tableData = res.data.result.aaData
         this.tableData.forEach((i) => {
-          if(i.taskName.length > 9){
-            i.taskName = i.taskName.substring(0, 9) + "..."
-          }  
+          if (i.taskName.length > 9) {
+            i.taskName = i.taskName.substring(0, 9) + '...'
+          }
         })
         this.pageTotle = res.data.result.iTotalRecords // 总条数
         this.pageNo = res.data.result.iDisplayStart // 显示当前页
@@ -291,14 +290,14 @@ export default {
     // 查询任务类型列表
     getTaskTypekList () {
       getTaskTypekList().then(res => {
-        this.options = res.data.result;
+        this.options = res.data.result
         res.data.result.forEach(value => {
-          if(value.id != -1) {
-            this.options2.push(value);
+          if (value.id !== -1) {
+            this.options2.push(value)
           }
         })
       }).catch(error => {
-        console.log(error);
+        console.log(error)
       })
     },
     // 重加载table
@@ -306,23 +305,23 @@ export default {
       this.testTabel = true
       setTimeout(() => {
         if (this.tableData.length !== 0) {
-          let tdWidthArray = document.getElementsByClassName('ivu-table-row')[0].children;
-          let thWidthArray = document.getElementsByTagName('thead')[0].children[0].children;
-          let clientW = [];
-          let clientHW = [];
-          let clientSW = [];
+          let tdWidthArray = document.getElementsByClassName('ivu-table-row')[0].children
+          let thWidthArray = document.getElementsByTagName('thead')[0].children[0].children
+          let clientW = []
+          let clientHW = []
+          let clientSW = []
           Object.keys(tdWidthArray).forEach((item, index) => {
             if (index === 0) {
-              clientW.push(tdWidthArray[item].offsetWidth - 1);
+              clientW.push(tdWidthArray[item].offsetWidth - 1)
             } else {
-              clientW.push(tdWidthArray[item].offsetWidth);
+              clientW.push(tdWidthArray[item].offsetWidth)
             }
           })
           Object.keys(thWidthArray).forEach((item, index) => {
             if (index === 0) {
-              clientHW.push(thWidthArray[item].offsetWidth - 1);
+              clientHW.push(thWidthArray[item].offsetWidth - 1)
             } else {
-              clientHW.push(thWidthArray[item].offsetWidth);
+              clientHW.push(thWidthArray[item].offsetWidth)
             }
           })
           clientW.forEach((item, index) => {
@@ -364,19 +363,18 @@ export default {
       this.changeTaskStatus(row, -1)
       this.$refs.refreshTitle.getTaskTitleList()
     },
-    //查看详情
+    // 查看详情
     details (row) {
       getTaskDetail({taskId: row.taskId}).then(res => {
-        if (res.data.code === 0)
-        {
-          this.showDetail = true;
+        if (res.data.code === 0) {
+          this.showDetail = true
           this.detailData.detailName = res.data.result.taskName
           this.detailData.detailType = res.data.result.taskType
           this.detailData.detailDes = res.data.result.taskDescribe
         }
       }).catch(error => {
-        this.$Message.error(error);
-      });
+        this.$Message.error(error)
+      })
     },
     // 通过开关状态判断值然后传值进行更新
     switch (index) {
@@ -406,4 +404,3 @@ export default {
   }
 }
 </script>
-

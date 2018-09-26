@@ -107,9 +107,9 @@ export default {
   methods: {
     // 预警列表
     getSelectorList () {
-      if(!this.taskId){
+      if (!this.taskId) {
         this.$message({
-         type: 'info',
+          type: 'info',
           message: '暂无数据'
         })
         return
@@ -172,34 +172,34 @@ export default {
           selectType: null,
           operateSymbol: 0
         }
-        if(item.flag === 20 || item.flag === 210){
-          if(item.stringValue.length > 0){
-            temp.fieldName = item.fieldName;
-            temp.fieldValue = item.stringValue;
-            temp.dataType = item.dataType;
-            temp.selectType = item.selectType;
-            temp.operateSymbol = item.operateSymbol;
+        if (item.flag === 20 || item.flag === 210) {
+          if (item.stringValue.length > 0) {
+            temp.fieldName = item.fieldName
+            temp.fieldValue = item.stringValue
+            temp.dataType = item.dataType
+            temp.selectType = item.selectType
+            temp.operateSymbol = item.operateSymbol
             this.selectorInput.push(temp)
           }
-        }else if(item.flag === 211){
-          if(item.stringValue.length > 0){
-            temp.fieldName = item.fieldName;
-            temp.fieldValue = item.stringValue.join(',');
-            temp.dataType = item.dataType;
-            temp.selectType = item.selectType;
-            temp.operateSymbol = item.operateSymbol;
+        } else if (item.flag === 211) {
+          if (item.stringValue.length > 0) {
+            temp.fieldName = item.fieldName
+            temp.fieldValue = item.stringValue.join(',')
+            temp.dataType = item.dataType
+            temp.selectType = item.selectType
+            temp.operateSymbol = item.operateSymbol
             this.selectorInput.push(temp)
           }
-        }else {
-          if(item.flag === 3 && item.dataValue.length >0){
-            temp.fieldName = item.fieldName;
-            if(item.dataValue[0] === undefined){
-              item.dataValue[0] = -1;
+        } else {
+          if (item.flag === 3 && item.dataValue.length > 0) {
+            temp.fieldName = item.fieldName
+            if (item.dataValue[0] === undefined) {
+              item.dataValue[0] = -1
             }
-            temp.fieldValue = item.dataValue.join(',');
-            temp.dataType = item.dataType;
-            temp.selectType = item.selectType;
-            temp.operateSymbol = item.operateSymbol;
+            temp.fieldValue = item.dataValue.join(',')
+            temp.dataType = item.dataType
+            temp.selectType = item.selectType
+            temp.operateSymbol = item.operateSymbol
             this.selectorInput.push(temp)
           }
         }
@@ -220,4 +220,3 @@ export default {
   }
 }
 </script>
-

@@ -23,7 +23,7 @@
     <div class="header-right" :class="((navWidth <= distant) || hideMenu) ? ('short') : ('')">
       <div class="header-right-button" :class="(left === 0 || left <= distant - navWidth - 30) ? 'only-one' : ''" v-show="navWidth > distant && !hideMenu">
         <div class="header-right-button-left" v-show="left > 0" @click="goLeft">
-          <i class="arrow-left"></i> 
+          <i class="arrow-left"></i>
         </div>
         <div class="header-right-button-right" v-show="left >= distant - navWidth - 30"  @click="goRight">
           <i class="arrow-right"></i>
@@ -64,7 +64,8 @@ import { signOut, updateSoundStatus } from '@/http/services/user_api'
 import { getTaskTitleList } from '@/http/services/task_api'
 import Clickoutside from 'element-ui/src/utils/clickoutside'
 import '@/lib/mqttws31'
-import { startSub, closeSub } from "@/utils/mqtt"
+import { closeSub, getNewMQTT } from '@/utils/mqtt'
+import VueCookies from 'vue-cookies'
 export default {
   name: 'HeaderNav',
   data () {
@@ -73,9 +74,9 @@ export default {
       popShow: false,
       title: '海致数据推送中心',
       subTitle: 'Intellgence PushCenter',
-      username: localStorage.getItem('username'),
-      volstatus: localStorage.getItem('userSoundStatus'),
-      userSoundURL: localStorage.getItem('userSoundURL'),
+      username: VueCookies.get('username'),
+      volstatus: VueCookies.get('userSoundStatus'),
+      userSoundURL: VueCookies.get('userSoundURL'),
       workList: [],
       workListIndex: null,
       taskId: '',
@@ -85,20 +86,20 @@ export default {
       navWidth: 2000,
       distant: '',
       flag: false,
-      client: new Paho.MQTT.Client(
-        '101.236.53.175',
-        8083,
-        'web_' + this.getCookie('userId')
-      ),
+      client: getNewMQTT(),
       topic: '/web/groupid/' + this.getCookie('userId')
     }
   },
   created () {
     this.socketEvent()
     this.getTaskTitleList()
-    if(this.$route.name === 'task' || this.$route.name === 'AddTask') {
-      this.hideMenu = true;
+    if (this.$route.name === 'task' || this.$route.name === 'AddTask') {
+      this.hideMenu = true
     }
+
+    setTimeout(() => {
+
+    })
     // startSub()
     // this.client.connect({
     //   userName: 'web',
@@ -136,8 +137,8 @@ export default {
         .then(res => {
           this.workList = res.data.result
           this.workList.forEach((i) => {
-            if(i.taskName.length > 9){
-              i.taskName = i.taskName.substring(0, 9) + "..."
+            if (i.taskName.length > 9) {
+              i.taskName = i.taskName.substring(0, 9) + '...'
             }
           })
           this.taskId = this.workList[0].taskId
@@ -150,17 +151,19 @@ export default {
           // 导航条宽度
           this.navWidth = this.workList.length * 144
           // 每次移动距离
-          this.distant = document.getElementsByClassName('header-center-inner')[0].clientWidth
+          if (document.getElementsByClassName('header-center-inner')[0]) {
+            this.distant = document.getElementsByClassName('header-center-inner')[0].clientWidth
+          } else {
+            this.distant = 0
+          }
         })
         .catch(error => {
           console.log(error)
         })
-
-
     },
     // 查询预警列表
     getTask (taskId, taskName, msgCount, index) {
-      this.workListIndex = index ? index : 0
+      this.workListIndex = index || 0
       this.$router.push('/alarm')
       this.$emit('getTask', taskId, taskName, msgCount)
     },
@@ -229,7 +232,7 @@ export default {
     },
     // socket监听
     socketEvent () {
-      this.$eventHub.$on('messagePush', (messageString)=>{
+      this.$eventHub.$on('messagePush', (messageString) => {
         let message = JSON.parse(messageString)
         this.workList.forEach((item, index) => {
           if (+item.taskId === +message.messageBody.taskId) {
@@ -244,11 +247,7 @@ export default {
     // websocket长连接
     reconnectSocket () {
       setTimeout(() => {
-        this.client = new Paho.MQTT.Client(
-          '101.236.53.175',
-          8083,
-          'web_' + this.getCookie('userId')
-        );
+        this.client = getNewMQTT()
         this.client.connect({
           userName: 'web',
           password: this.getCookie('userToken'),
@@ -262,4 +261,3 @@ export default {
   directives: { Clickoutside }
 }
 </script>
-

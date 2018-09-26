@@ -78,11 +78,11 @@
   </ul>
 </template>
 <script>
-import { oneOf } from '@/utils/assist';
+import { oneOf } from '@/utils/assist'
 // import Options from './options.vue';
-import Locale from '@/lib/mixins/locale';
+import Locale from '@/lib/mixins/locale'
 
-const prefixCls = 'ivu-page';
+const prefixCls = 'ivu-page'
 
 export default {
   name: 'Page',
@@ -104,12 +104,12 @@ export default {
     pageSizeOpts: {
       type: Array,
       default () {
-        return [10, 20, 30, 40];
+        return [10, 20, 30, 40]
       }
     },
     placement: {
       validator (value) {
-        return oneOf(value, ['top', 'bottom']);
+        return oneOf(value, ['top', 'bottom'])
       },
       default: 'bottom'
     },
@@ -119,7 +119,7 @@ export default {
     },
     size: {
       validator (value) {
-        return oneOf(value, ['small']);
+        return oneOf(value, ['small'])
       }
     },
     simple: {
@@ -150,29 +150,29 @@ export default {
       prefixCls: prefixCls,
       currentPage: this.current,
       currentPageSize: this.pageSize
-    };
+    }
   },
   watch: {
     total (val) {
-      let maxPage = Math.ceil(val / this.currentPageSize);
+      let maxPage = Math.ceil(val / this.currentPageSize)
       if (maxPage < this.currentPage && maxPage > 0) {
-        this.currentPage = maxPage;
+        this.currentPage = maxPage
       }
     },
     current (val) {
-      this.currentPage = val;
+      this.currentPage = val
     },
     pageSize (val) {
-      this.currentPageSize = val;
+      this.currentPageSize = val
     }
   },
   computed: {
     isSmall () {
-      return !!this.size;
+      return !!this.size
     },
     allPages () {
-      const allPage = Math.ceil(this.total / this.currentPageSize);
-      return (allPage === 0) ? 1 : allPage;
+      const allPage = Math.ceil(this.total / this.currentPageSize)
+      return (allPage === 0) ? 1 : allPage
     },
     simpleWrapClasses () {
       return [
@@ -181,10 +181,10 @@ export default {
         {
           [`${this.className}`]: !!this.className
         }
-      ];
+      ]
     },
     simplePagerClasses () {
-      return `${prefixCls}-simple-pager`;
+      return `${prefixCls}-simple-pager`
     },
     wrapClasses () {
       return [
@@ -193,7 +193,7 @@ export default {
           [`${this.className}`]: !!this.className,
           'mini': !!this.size
         }
-      ];
+      ]
     },
     prevClasses () {
       return [
@@ -201,7 +201,7 @@ export default {
         {
           [`${prefixCls}-disabled`]: this.currentPage === 1
         }
-      ];
+      ]
     },
     prevFirst () {
       return [
@@ -213,7 +213,7 @@ export default {
           [`${prefixCls}-item-active`]: this.currentPage === 1
         },
         `prev-first`
-      ];
+      ]
     },
     nextClasses () {
       return [
@@ -221,7 +221,7 @@ export default {
         {
           [`${prefixCls}-disabled`]: this.currentPage === this.allPages
         }
-      ];
+      ]
     },
     nextLast () {
       return [
@@ -233,7 +233,7 @@ export default {
           [`${prefixCls}-item-active`]: this.currentPage === this.allPages
         },
         `next-last`
-      ];
+      ]
     },
     firstPageClasses () {
       return [
@@ -241,7 +241,7 @@ export default {
         {
           [`${prefixCls}-item-active`]: this.currentPage === 1
         }
-      ];
+      ]
     },
     lastPageClasses () {
       return [
@@ -249,86 +249,86 @@ export default {
         {
           [`${prefixCls}-item-active`]: this.currentPage === this.allPages
         }
-      ];
+      ]
     }
   },
   methods: {
     changePage (page) {
-      if (this.currentPage != page) {
-        this.currentPage = page;
-        this.$emit('update:current', page);
-        this.$emit('on-change', page);
+      if (this.currentPage !== page) {
+        this.currentPage = page
+        this.$emit('update:current', page)
+        this.$emit('on-change', page)
       }
     },
     prev () {
-      const current = this.currentPage;
+      const current = this.currentPage
       if (current <= 1) {
-        return false;
+        return false
       }
-      this.changePage(current - 1);
+      this.changePage(current - 1)
     },
     next () {
-      const current = this.currentPage;
+      const current = this.currentPage
       if (current >= this.allPages) {
-        return false;
+        return false
       }
-      this.changePage(current + 1);
+      this.changePage(current + 1)
     },
     fastPrev () {
-      const page = this.currentPage - 5;
+      const page = this.currentPage - 5
       if (page > 0) {
-        this.changePage(page);
+        this.changePage(page)
       } else {
-        this.changePage(1);
+        this.changePage(1)
       }
     },
     fastNext () {
-      const page = this.currentPage + 5;
+      const page = this.currentPage + 5
       if (page > this.allPages) {
-        this.changePage(this.allPages);
+        this.changePage(this.allPages)
       } else {
-        this.changePage(page);
+        this.changePage(page)
       }
     },
     onSize (pageSize) {
-      this.currentPageSize = pageSize;
-      this.$emit('on-page-size-change', pageSize);
-      this.changePage(1);
+      this.currentPageSize = pageSize
+      this.$emit('on-page-size-change', pageSize)
+      this.changePage(1)
     },
     onPage (page) {
-      this.changePage(page);
+      this.changePage(page)
     },
     keyDown (e) {
-      const key = e.keyCode;
-      const condition = (key >= 48 && key <= 57) || (key >= 96 && key <= 105) || key === 8 || key === 37 || key === 39;
+      const key = e.keyCode
+      const condition = (key >= 48 && key <= 57) || (key >= 96 && key <= 105) || key === 8 || key === 37 || key === 39
 
       if (!condition) {
-        e.preventDefault();
+        e.preventDefault()
       }
     },
     keyUp (e) {
-      const key = e.keyCode;
-      const val = parseInt(e.target.value);
+      const key = e.keyCode
+      const val = parseInt(e.target.value)
 
       if (key === 38) {
-        this.prev();
+        this.prev()
       } else if (key === 40) {
-        this.next();
+        this.next()
       } else if (key === 13) {
-        let page = 1;
+        let page = 1
 
         if (val > this.allPages) {
-          page = this.allPages;
+          page = this.allPages
         } else if (val <= 0 || !val) {
-          page = 1;
+          page = 1
         } else {
-          page = val;
+          page = val
         }
 
-        e.target.value = page;
-        this.changePage(page);
+        e.target.value = page
+        this.changePage(page)
       }
     }
   }
-};
+}
 </script>

@@ -76,7 +76,7 @@ export default {
       alarmSumTotal: 0, // 总预警量
       alarmRate: 0, // 占比
       popFeed: false,
-      onerror:  `this.src="${require('../../assets/imgs/default-img.png')}"`
+      onerror: `this.src="${require('@/assets/imgs/default-img.png')}"`
     }
   },
   mounted () {
@@ -86,7 +86,7 @@ export default {
     })
   },
   beforeUpdate () {
-    if(!this.taskId){
+    if (!this.taskId) {
       this.loading = false
     }
   },
@@ -296,7 +296,6 @@ export default {
             this.columns2[index].width = item
           })
         }
-
       }, 100)
     },
     // 消息已读接口

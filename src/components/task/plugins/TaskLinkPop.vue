@@ -64,11 +64,11 @@ export default {
       }
     },
     linkType (val) {
-      if (this.linkType == '1') {
+      if (this.linkType === '1') {
         this.showText2 = ''
-      }else if (this.linkType == '2') {
+      } else if (this.linkType === '2') {
         this.showText1 = ''
-      }else {
+      } else {
         this.showText1 = this.showText2 = ''
       }
     },
