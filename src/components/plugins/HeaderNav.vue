@@ -47,11 +47,11 @@
             </div>
             <div class="title">{{username}}</div>
           </li>
-          <!--<li class="h32 lh32 pdl16 pdr8 pointer">重点人员管理</li>-->
+          <li>重点人员管理</li>
           <li @click="goSetting" v-show="username.includes('admin')">预警任务管理</li>
-          <!--<li class="h32 lh32 pdl16 pdr8 pointer">用户中心</li>-->
-          <!--<li class="h32 lh32 pdl16 pdr8 pointer">个人管理</li>-->
-          <li class="setting-line" v-show="username.includes('admin')"></li>
+          <li>用户中心</li>
+          <li>个人管理</li>
+          <!-- <li class="setting-line" v-show="username.includes('admin')"></li> -->
           <li class="setting-out" @click="signOut">退出</li>
         </ul>
       </div>

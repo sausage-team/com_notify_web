@@ -1,5 +1,5 @@
 <template>
-  <div class="step-wrapper" v-show="stepCurrent == 0">
+  <div class="step-wrapper task-field-main" v-show="stepCurrent == 0">
     <div class="step step-1" >
       <div class="step1-left">
         <div class="left-title">
@@ -231,7 +231,6 @@ export default {
       showCondition({taskId: this.taskId}).then(res => {
         this.filterType = res.data.result.alarmCondition.filterType
         this.tempColumn = res.data.result.alarmCondition.columns
-
         this.getWorkList(res.data.result.workTalName)
       }).catch(error => {
         console.log(error)

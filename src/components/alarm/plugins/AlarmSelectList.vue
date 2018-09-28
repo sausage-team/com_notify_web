@@ -7,25 +7,27 @@
           <div class="item-title">{{item.fieldDesc}}</div>
           <div class="item-date-box">
             <div class="item-date-title">开始</div>
-            <el-date-picker
+            <!-- <el-date-picker
               class="date-con"
               v-model="item.dataValue[0]"
               type="datetime"
               placeholder="选择日期"
               value-format="yyyy-MM-dd hh:mm:ss"
               default-time="12:00:00">
-            </el-date-picker>
+            </el-date-picker> -->
+            <DatePicker
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期">
+            </DatePicker>
           </div>
           <div class="item-date-box">
             <div class="item-date-title">结束</div>
-            <el-date-picker
-              class="date-con"
-              v-model="item.dataValue[1]"
+            <DatePicker
               type="datetime"
-              placeholder="选择日期"
-              value-format="yyyy-MM-dd hh:mm:ss"
-              default-time="12:00:00">
-            </el-date-picker>
+              format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期">
+            </DatePicker>
           </div>
         </div>
         <div class="item-box" v-if="item.flag === 20">

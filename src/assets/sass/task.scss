@@ -270,12 +270,9 @@
 .task-field-main {
   height: calc(100% - 100px);
 
-  .task-field-body {
+  .step-1 {
     width: 100%;
     height: calc(100% - 48px);
-  }
-
-  .step-1 {
     margin-bottom: 8px;
     display: flex;
     justify-content: center;

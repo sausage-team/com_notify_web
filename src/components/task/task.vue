@@ -6,7 +6,7 @@
         <div class="task-header">
           <div class="task-select-box">
             <div class="select-title">任务管理</div>
-            <el-select v-model="taskTypeId" class="task-select" @change="changeList" placeholder="请选择">
+            <el-select v-model="taskTypeId" class="task-select" @change="changeList" placeholder="选择">
               <el-option
                 v-for="i in options"
                 :key="i.id"
@@ -79,8 +79,8 @@
         </Modal>
       </div>
     </div>
-    <!-- <div class="pop-bg" v-show=""> -->
-    <div class="pop-bg">
+    <div class="pop-bg" v-show="">
+    <!-- <div class="pop-bg"> -->
       <div class="w500 h335  pdl24 pdb12 bg-color-white box-shadow-box pop-window" >
         <div class="h48 lh48 fs14 mgb10 clearfix pop-title">
           <div class="fl fw">新建任务</div>
@@ -244,6 +244,7 @@ export default {
     }
   },
   created () {
+    this.popShow = false
     this.getTaskTypekList()
     this.getTaskList()
   },
