@@ -1,5 +1,5 @@
 import axios from 'axios'
-import qs from 'qs'
+// import qs from 'qs'
 
 /**
  *
@@ -8,7 +8,7 @@ import qs from 'qs'
  * @returns {AxiosPromise}
  */
 export function signIn (params) {
-  return axios.post('/api/user/login', qs.stringify(params))
+  return axios.post('/api/account/user/login', params)
 }
 
 /**
@@ -18,8 +18,25 @@ export function signIn (params) {
  * @returns {AxiosPromise}
  */
 export function signOut (params) {
-  return axios.post('/api/user/logout', params)
+  return axios.delete('/api/account/user/logout', params)
 }
+
+export function getProfile () {
+  return axios.get('/api/account/user/profile')
+}
+
+/**
+ *
+ * @desc 更改用户声音状态
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function updateSoundStatus (params) {
+  const query = `api/account/user/update_sound_status?switch=${params.userSoundStatus}`
+  return axios.put(query)
+}
+
+// 移到推送中心，不要了 undo by chenbo 2018.10.10
 /**
  *
  * @desc 查询组列表
@@ -48,14 +65,4 @@ export function getGroupUsers (params) {
  */
 export function getUserPortraits () {
   return axios.post('/api/user/getUserPortraits')
-}
-
-/**
- *
- * @desc 更改用户声音状态
- * @param params
- * @returns {AxiosPromise}
- */
-export function updateSoundStatus (params) {
-  return axios.post('api/user/updateSoundStatus', params)
 }

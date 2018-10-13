@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import { signIn } from '@/http/services/user_api'
-import { startSub } from '@/utils/mqtt'
+import { signIn, getProfile } from '@/http/services/user_api'
+// import { startSub } from '@/utils/mqtt'
 import VueCookies from 'vue-cookies'
 export default {
   name: 'Login',
@@ -60,25 +60,40 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           const params = {
-            userName: this.loginForm.user,
+            username: this.loginForm.user,
             password: this.loginForm.password
           }
           signIn(params).then(res => {
-            if (res.status === 200 && res.data.code === 0) {
-              startSub()
-              VueCookies.set('token', res.data.result.userToken)
-              VueCookies.set('userSoundStatus', res.data.result.userSoundStatus)
-              VueCookies.set('userSoundURL', res.data.result.userSoundURL)
-              VueCookies.set('username', res.data.result.userName)
+            if (res.status === 200 && res.data.status === 0) {
+              let data = res.data.data
+              VueCookies.set('token', data.access_token)
+              localStorage.setItem('token', data.access_token)
+              // VueCookies.set('userSoundStatus', res.data.result.userSoundStatus)
+              // VueCookies.set('userSoundURL', res.data.result.userSoundURL)
+              // VueCookies.set('username', res.data.result.userName)
+              this.getUserInfo()
+              if (!this.client) {
+                this.$emit('startSub')
+              }
               this.$router.push('/alarm')
             } else {
               if (this.data) {
-                this.errorMsg = this.data.reason
+                this.errorMsg = this.data.msg
               }
             }
           }).catch(error => {
             console.log(error)
           })
+        }
+      })
+    },
+    getUserInfo () {
+      getProfile().then(res => {
+        if (res.status === 200 && res.data.status === 0) {
+          let data = res.data.data
+          VueCookies.set('userId', data.id)
+          VueCookies.set('username', data.name)
+          localStorage.setItem('userSoundStatus', data.sound_switch)
         }
       })
     }

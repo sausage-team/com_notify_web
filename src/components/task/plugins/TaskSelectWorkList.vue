@@ -191,7 +191,7 @@ export default {
   },
   props: {
     stepCurrent: Number,
-    taskId: Number
+    taskId: String
   },
   watch: {
     stepCurrent (val) {

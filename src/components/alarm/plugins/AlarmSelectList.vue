@@ -3,7 +3,7 @@
     <div  class="content-right"  >
       <p>预警消息筛选</p>
       <div class="select-item" v-for="(item, index) in selectShow" :key = 'index'>
-        <div class="item-box item-date-time" v-if="item.flag === 3">
+        <div class="item-box item-date-time" v-if="item.flag === 2">
           <div class="item-title">{{item.fieldDesc}}</div>
           <div class="item-date-box">
             <div class="item-date-title">开始</div>
@@ -30,11 +30,11 @@
             </DatePicker>
           </div>
         </div>
-        <div class="item-box" v-if="item.flag === 20">
+        <div class="item-box" v-if="item.flag === 10">
           <div class="item-title">{{item.fieldDesc}}</div>
           <Input v-model="item.stringValue" class="item-input" placeholder="请输入内容"></Input>
         </div>
-        <div class="item-box" v-if="item.flag === 210">
+        <div class="item-box" v-if="item.flag === 110">
           <div class="item-title">{{item.fieldDesc}}</div>
           <el-select v-model="item.stringValue" placeholder="请选择"  class="item-select" @focus="getDictInfo(item.dicId)">
             <el-option
@@ -45,7 +45,7 @@
             </el-option>
           </el-select>
         </div>
-        <div class="item-box" v-if="item.flag === 211">
+        <div class="item-box" v-if="item.flag === 111">
           <div class="item-title">{{item.fieldDesc}}</div>
           <el-select v-model="item.stringValue" placeholder="请选择" multiple class="item-select-mulitype" @focus="getDictInfo(item.dicId)">
             <el-option
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import {getSelectorList} from '@/http/services/alarm_api'
+import {getSelector} from '@/http/services/alarm_api'
 import {getDictInfo} from '@/http/services/dic_api'
 
 export default {
@@ -83,11 +83,12 @@ export default {
       model1: '',
       model2: '',
       selectShow: [],
-      selectorInput: []
+      queryFilter: {}
+      // selectorInput: []
     }
   },
   props: {
-    taskId: Number,
+    taskId: String,
     popSelect: Boolean
   },
   watch: {
@@ -116,8 +117,7 @@ export default {
         })
         return
       }
-      console.log(this.taskId)
-      getSelectorList({taskId: this.taskId}).then(res => {
+      getSelector({taskId: this.taskId}).then(res => {
         let temp = {
           flag: '', // 筛选器类型
           stringValue: '',
@@ -130,25 +130,30 @@ export default {
           operateSymbol: 0
         }
         this.selectShow = []
-        res.data.result.forEach((item, index) => {
+        res.data.data.forEach((item, index) => {
           temp = JSON.parse(JSON.stringify(temp))
           this.selectShow.push(temp)
-          if (item.dataType === 2 && item.inputType === 0) {
-            this.selectShow[index].flag = 20 // 表示文本
-          } else if (item.dataType === 2 && item.inputType === 1 && item.selectType === 0) {
-            this.selectShow[index].flag = 210 // 单选字典
-            this.selectShow[index].dicId = item.dicId
-            this.selectShow[index].selectType = item.selectType
-          } else if (item.dataType === 2 && item.inputType === 1 && item.selectType === 1) {
-            this.selectShow[index].flag = 211 // 多选字典
-            this.selectShow[index].dicId = item.dicId
-            this.selectShow[index].selectType = item.selectType
-          } else if (item.dataType === 3) {
-            this.selectShow[index].flag = 3 // 日期
+          // if (item.dataType === 2 && item.inputType === 0) {
+          //   this.selectShow[index].flag = 20 // 表示文本
+          // } else if (item.dataType === 2 && item.inputType === 1 && item.selectType === 0) {
+          //   this.selectShow[index].flag = 210 // 单选字典
+          //   this.selectShow[index].dicId = item.dicId
+          //   this.selectShow[index].selectType = item.selectType
+          // } else if (item.dataType === 2 && item.inputType === 1 && item.selectType === 1) {
+          //   this.selectShow[index].flag = 211 // 多选字典
+          //   this.selectShow[index].dicId = item.dicId
+          //   this.selectShow[index].selectType = item.selectType
+          // } else if (item.dataType === 3) {
+          //   this.selectShow[index].flag = 3 // 日期
+          // }
+          if (item.origin_type === 0 || item.origin_type === 1) {
+            this.selectShow[index].flag = 10 // 表示数值或文本
+          } else if (item.origin_type === 2) {
+            this.selectShow[index].flag = 2 // 日期
           }
-          this.selectShow[index].fieldName = item.fieldName
-          this.selectShow[index].fieldDesc = item.fieldDesc
-          this.selectShow[index].dataType = item.dataType
+          this.selectShow[index].fieldName = item.id
+          this.selectShow[index].fieldDesc = item.alias ? item.alias : item.name
+          this.selectShow[index].dataType = item.origin_type
         })
         console.log(this.selectShow)
       }).catch(error => {
@@ -165,48 +170,54 @@ export default {
     },
     // 应用筛选
     applyFilter () {
-      this.selectorInput = []
+      // this.selectorInput = []
+      this.queryFilter = {}
       this.selectShow.forEach((item) => {
-        let temp = {
-          fieldName: '',
-          fieldValue: '',
-          dataType: null,
-          selectType: null,
-          operateSymbol: 0
-        }
-        if (item.flag === 20 || item.flag === 210) {
+        // let temp = {
+        //   fieldName: '',
+        //   fieldValue: '',
+        //   dataType: null,
+        //   selectType: null,
+        //   operateSymbol: 0
+        // }
+        let filter = {}
+        if (item.flag === 10 || item.flag === 110) {
           if (item.stringValue.length > 0) {
-            temp.fieldName = item.fieldName
-            temp.fieldValue = item.stringValue
-            temp.dataType = item.dataType
-            temp.selectType = item.selectType
-            temp.operateSymbol = item.operateSymbol
-            this.selectorInput.push(temp)
+            // temp.fieldName = item.fieldName
+            // temp.fieldValue = item.stringValue
+            // temp.dataType = item.dataType
+            // temp.selectType = item.selectType
+            // temp.operateSymbol = item.operateSymbol
+            // this.selectorInput.push(temp)
+            filter[item.fieldName] = item.stringValue
           }
-        } else if (item.flag === 211) {
+        } else if (item.flag === 111) {
           if (item.stringValue.length > 0) {
-            temp.fieldName = item.fieldName
-            temp.fieldValue = item.stringValue.join(',')
-            temp.dataType = item.dataType
-            temp.selectType = item.selectType
-            temp.operateSymbol = item.operateSymbol
-            this.selectorInput.push(temp)
+            // temp.fieldName = item.fieldName
+            // temp.fieldValue = item.stringValue.join(',')
+            // temp.dataType = item.dataType
+            // temp.selectType = item.selectType
+            // temp.operateSymbol = item.operateSymbol
+            // this.selectorInput.push(temp)
+            filter[item.fieldName] = item.stringValue.join(',')
           }
         } else {
-          if (item.flag === 3 && item.dataValue.length > 0) {
-            temp.fieldName = item.fieldName
-            if (item.dataValue[0] === undefined) {
-              item.dataValue[0] = -1
-            }
-            temp.fieldValue = item.dataValue.join(',')
-            temp.dataType = item.dataType
-            temp.selectType = item.selectType
-            temp.operateSymbol = item.operateSymbol
-            this.selectorInput.push(temp)
+          if (item.flag === 2 && item.dataValue.length > 0) {
+            // temp.fieldName = item.fieldName
+            // if (item.dataValue[0] === undefined) {
+            //   item.dataValue[0] = -1
+            // }
+            // temp.fieldValue = item.dataValue.join(',')
+            // temp.dataType = item.dataType
+            // temp.selectType = item.selectType
+            // temp.operateSymbol = item.operateSymbol
+            // this.selectorInput.push(temp)
           }
         }
+        this.queryFilter = filter
       })
-      this.$emit('applyFilter', this.selectorInput)
+      // this.$emit('applyFilter', this.selectorInput)
+      this.$emit('applyFilter', this.queryFilter)
     },
     // 还原
     clearAll () {

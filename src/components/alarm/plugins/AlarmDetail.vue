@@ -10,7 +10,7 @@
         <div class="close-title" @click="closeDetail">关闭</div>
       </div>
       <div class="row-detail" v-for="(item, index) in alarmDetail" :key = 'index'>
-        <div class="row-item" v-if="item.type === 0">
+        <div class="row-item" v-if="item.type === 1">
           <div class="row-title">
             <span :title="item.fieldDesc">{{item.fieldDesc}}</span>
           </div>
@@ -18,9 +18,9 @@
             <span :title="item.value">{{item.value}}</span>
           </div>
         </div>
-        <div class="row-item" v-if="item.type === 1">
+        <div class="row-item" v-if="item.type === 2">
           <div class="row-title">
-            <span:title="item.fieldDesc">{{item.fieldDesc}}</span>
+            <span :title="item.fieldDesc">{{item.fieldDesc}}</span>
           </div>
           <div class="row-con">
             <div class="row-url" :title="item.value" >
@@ -28,7 +28,7 @@
             </div>
           </div>
         </div>
-        <div class="row-item" v-if="item.type === 2">
+        <div class="row-item" v-if="item.type === 3">
           <div class="row-title">
             <span :title="item.fieldDesc">{{item.fieldDesc}}</span>
           </div>
@@ -39,14 +39,14 @@
       </div>
     </div>
     <div class="select-operate">
-      <Button type="primary" class="select-operate-apply" @click="signIn" :disabled="alarmStatus != 0 && alarmStatus != 1" >签收</Button>
-      <Button type="text" class="select-operate-origin" @click="feedback" :disabled="alarmStatus === 3" >反馈</Button>
+      <Button type="primary" class="select-operate-apply" @click="signIn" :disabled="alarmStatus === 1 || alarmStatus === 2" >签收</Button>
+      <Button type="text" class="select-operate-origin" @click="feedback" :disabled="alarmStatus === 1" >反馈</Button>
     </div>
   </div>
 </template>
 
 <script>
-import {getAlarmDetail, getAlarmSign} from '@/http/services/alarm_api'
+import {getMsgDetail, ackMsg} from '@/http/services/alarm_api'
 export default {
   name: 'AlarmDetail',
   data () {
@@ -57,7 +57,7 @@ export default {
     }
   },
   props: {
-    taskId: Number,
+    taskId: String,
     taskName: String,
     popDetail: Boolean
   },
@@ -77,10 +77,9 @@ export default {
     // 查询详细信息
     getAlarmDetail () {
       let params = {
-        taskId: this.taskId,
-        alarmId: this.alarmId
+        msgId: this.alarmId
       }
-      getAlarmDetail(params).then(res => {
+      getMsgDetail(params).then(res => {
         let temp = {
           fieldDesc: '',
           fieldName: '',
@@ -90,17 +89,17 @@ export default {
           value: ''
         }
         this.alarmDetail = []
-        res.data.result.alarmDataDetailList.forEach((item, index) => {
+        res.data.data.data_list.forEach((item, index) => {
           temp = JSON.parse(JSON.stringify(temp))
           this.alarmDetail.push(temp)
-          this.alarmDetail[index].type = item.type
-          this.alarmDetail[index].linkType = item.linkType
-          this.alarmDetail[index].fieldName = item.fieldName
-          this.alarmDetail[index].fieldDesc = item.fieldDesc
+          this.alarmDetail[index].type = item.display_type
+          this.alarmDetail[index].linkType = item.link_type
+          this.alarmDetail[index].fieldName = item.name
+          this.alarmDetail[index].fieldDesc = item.name
           this.alarmDetail[index].value = item.value
-          this.alarmDetail[index].showText = item.showText
+          this.alarmDetail[index].showText = item.show_text
         })
-        this.alarmStatus = res.data.result.alarmStatus
+        this.alarmStatus = res.data.data.ack
       }).catch(error => {
         console.log(error)
       })
@@ -112,15 +111,15 @@ export default {
     // 签收
     signIn () {
       let params = {
-        taskId: this.taskId,
-        alarmId: this.alarmId
+        id: this.alarmId,
+        ack: 2
       }
       this.$confirm('确定签收?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        getAlarmSign(params).then(res => {
+        ackMsg(params).then(res => {
           this.$emit('signIn')
         }).catch(error => {
           console.log(error)

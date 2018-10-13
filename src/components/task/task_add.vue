@@ -60,7 +60,7 @@ export default {
     return {
       stepCurrent: 0,
       taskName: this.$route.query.taskName, // 任务名称
-      taskId: +this.$route.query.taskId,
+      taskId: this.$route.query.taskId,
       fieldString: [], // 工作表表头字段文本格式
       fieldOption: [] // 任务字段
     }

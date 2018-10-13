@@ -405,7 +405,7 @@ export default {
   },
   props: {
     stepCurrent: Number,
-    taskId: Number,
+    taskId: String,
     fieldString: Array // 临时筛选条件
   },
   created () {

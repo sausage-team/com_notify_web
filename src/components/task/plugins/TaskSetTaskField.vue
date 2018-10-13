@@ -274,7 +274,7 @@ export default {
   },
   props: {
     stepCurrent: Number,
-    taskId: Number,
+    taskId: String,
     fieldOption: Array,
     columns1: Array, // 工作表预览
     columns1String: Array // 临时筛选条件

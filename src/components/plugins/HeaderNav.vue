@@ -12,10 +12,14 @@
         <div class="layer-left" v-show="left < 0"></div>
         <div class="layer-right" v-show="left > distant - navWidth"></div>
         <ul class="header-nav" :style="{ left: left + 'px', width: this.navWidth +'px'}" >
-          <li class="inner-title" :class="[index === workListIndex ? 'li-select' : '']" v-for="(item, index) in workList" :key = 'index' @click="getTask(item.taskId, item.taskName, item.msgCount, index)">
-            {{item.taskName}}
-            <span class="count" v-if="item.msgCount > 0 && item.msgCount < 100">{{item.msgCount}}</span>
-            <span class="count" v-if="item.msgCount >= 100">…</span>
+          <li class="inner-title" :class="[index === workListIndex ? 'li-select' : '']" v-for="(item, index) in workList"
+              :key = 'index' @click="getTask(item.id, item.msgCount)">
+            <span>{{item.name}}</span>
+            <span class="count" v-show="item.msgCount > 0" :ref="`msg_count_${item.id}`">
+              {{(item.msgCount >= 100)?('...'):(item.msgCount)}}
+            </span>
+            <!--<span class="count" v-if="item.msgCount > 0 && item.msgCount < 100">{{item.msgCount}}</span>-->
+            <span class="count" v-show="item.msgCount >= 100">…</span>
           </li>
         </ul>
       </div>
@@ -35,7 +39,7 @@
         <div class="audio-off" v-show="volstatus != 1" @click="setVolswitch(1)"></div>
         <div class="setting-icon" @click="popShow = !popShow" v-clickoutside="closePopShow"></div>
         <audio id='tipAudio'>
-          <source src="http://101.236.19.193/bell/72596.mp3" type="audio/mpeg">
+          <source src="../../assets/medias/notify.mp3" type="audio/mpeg">
           您的浏览器不支持 audio 元素。
         </audio>
       </div>
@@ -47,10 +51,10 @@
             </div>
             <div class="title">{{username}}</div>
           </li>
-          <li>重点人员管理</li>
-          <li @click="goSetting" v-show="username.includes('admin')">预警任务管理</li>
-          <li>用户中心</li>
-          <li>个人管理</li>
+          <!-- <li>重点人员管理</li> -->
+          <!-- <li @click="goSetting" v-show="username.includes('admin')">预警任务管理</li> -->
+          <!-- <li>用户中心</li> -->
+          <!-- <li>个人管理</li> -->
           <!-- <li class="setting-line" v-show="username.includes('admin')"></li> -->
           <li class="setting-out" @click="signOut">退出</li>
         </ul>
@@ -60,11 +64,9 @@
 </template>
 
 <script>
-import { signOut, updateSoundStatus } from '@/http/services/user_api'
-import { getTaskTitleList } from '@/http/services/task_api'
+import {signOut, updateSoundStatus} from '@/http/services/user_api'
+import {getMsgTaskList} from '@/http/services/alarm_api'
 import Clickoutside from 'element-ui/src/utils/clickoutside'
-import '@/lib/mqttws31'
-import { closeSub, getNewMQTT } from '@/utils/mqtt'
 import VueCookies from 'vue-cookies'
 export default {
   name: 'HeaderNav',
@@ -75,24 +77,22 @@ export default {
       title: '海致数据推送中心',
       subTitle: 'Intellgence PushCenter',
       username: VueCookies.get('username'),
-      volstatus: VueCookies.get('userSoundStatus'),
-      userSoundURL: VueCookies.get('userSoundURL'),
+      volstatus: localStorage.getItem('userSoundStatus'),
+      // userSoundURL: VueCookies.get('userSoundURL'),
       workList: [],
       workListIndex: null,
       taskId: '',
       taskName: '',
-      msgCount: null,
+      msgCount: 0,
       left: 0,
       navWidth: 2000,
       distant: '',
-      flag: false,
-      client: getNewMQTT(),
-      topic: '/web/groupid/' + this.getCookie('userId')
+      flag: false
     }
   },
   created () {
     this.socketEvent()
-    this.getTaskTitleList()
+    this.getTaskList()
     if (this.$route.name === 'task' || this.$route.name === 'AddTask') {
       this.hideMenu = true
     }
@@ -100,17 +100,6 @@ export default {
     setTimeout(() => {
 
     })
-    // startSub()
-    // this.client.connect({
-    //   userName: 'web',
-    //   password: this.getCookie('userToken'),
-    //   keepAliveInterval: 10,
-    //   onSuccess: this.onConnect,
-    //   onFailure: this.errorFailure
-    // }) // 连接服务器并注册连接成功处理事件
-    // this.client.onConnectionLost = this.onConnectionLost
-    // this.client.onMessageArrived = this.onMessageArrived // 注册消息接收处理事件
-    // this.client.disconnect();
   },
   methods: {
 
@@ -125,47 +114,49 @@ export default {
         .then(res => {
           this.$router.push('/login')
           this.popShow = false
-          closeSub()
+          this.$emit('closeSub')
         })
         .catch(error => {
           console.log(error)
         })
     },
     // 查询任务列表
-    getTaskTitleList () {
-      getTaskTitleList('')
-        .then(res => {
-          this.workList = res.data.result
-          this.workList.forEach((i) => {
-            if (i.taskName.length > 9) {
-              i.taskName = i.taskName.substring(0, 9) + '...'
-            }
-          })
-          this.taskId = this.workList[0].taskId
-          this.taskName = this.workList[0].taskName
-          this.msgCount = this.workList[0].msgCount
-          this.workListIndex = 0
-          if (this.$route.path === '/alarm') {
-            this.getTask(this.taskId, this.taskName, this.msgCount)
+    getTaskList () {
+      getMsgTaskList().then(res => {
+        this.workList = res.data.data
+        this.workList.forEach((i) => {
+          if (i.name.length > 9) {
+            i.name = i.name.substring(0, 9) + '...'
           }
-          // 导航条宽度
-          this.navWidth = this.workList.length * 144
-          // 每次移动距离
-          if (document.getElementsByClassName('header-center-inner')[0]) {
-            this.distant = document.getElementsByClassName('header-center-inner')[0].clientWidth
-          } else {
-            this.distant = 0
+          if (!i.msgCount) {
+            i.msgCount = 0
           }
         })
-        .catch(error => {
-          console.log(error)
-        })
+
+        this.taskId = this.workList[0].id
+        this.taskName = this.workList[0].name
+        this.msgCount = this.workList[0].msgCount
+        this.workListIndex = 0
+        if (this.$route.path === '/alarm') {
+          this.getTask(this.taskId, this.msgCount)
+        }
+        // 导航条宽度
+        this.navWidth = this.workList.length * 144
+        // 每次移动距离
+        if (document.getElementsByClassName('header-center-inner')[0]) {
+          this.distant = document.getElementsByClassName('header-center-inner')[0].clientWidth
+        } else {
+          this.distant = 0
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
     // 查询预警列表
-    getTask (taskId, taskName, msgCount, index) {
-      this.workListIndex = index || 0
+    getTask (taskId, msgCount) {
+      // this.workListIndex = index || 0
       this.$router.push('/alarm')
-      this.$emit('getTask', taskId, taskName, msgCount)
+      this.$emit('getTask', taskId, msgCount)
     },
     // 设置声音开关
     setVolswitch (index) {
@@ -179,8 +170,10 @@ export default {
     // 清除socket消息提示
     clearMsg (taskId) {
       this.workList.forEach((item, index) => {
-        if (+item.taskId === taskId) {
+        if (item.id === taskId) {
           this.workList[index].msgCount = 0
+          this.$refs[`msg_count_${item.id}`][0].innerHTML = 0
+          this.$refs[`msg_count_${item.id}`][0].style.display = 'none'
         }
       })
     },
@@ -199,30 +192,6 @@ export default {
         this.left = 0
       }
     },
-    // socket
-    // 断开连接
-    onConnectionLost: function (responseObject) {
-      if (responseObject.errorCode !== 0) {
-        console.log('onConnectionLost:' + responseObject.errorMessage)
-        console.log('连接已断开')
-        this.reconnectSocket()
-      }
-    },
-    // 接收到的消息
-    onMessageArrived: function (message) {
-      // 直接拿message.payloadString就是服务端传来的消息
-      // console.log('收到消息:' + message.payloadString)
-      this.socketEvent(message.payloadString)
-    },
-    // 连接成功
-    onConnect: function () {
-      console.log('onConnected')
-      this.client.subscribe(this.topic) // 订阅主题
-    },
-    // 连接失败
-    errorFailure: function () {
-      this.reconnectSocket()
-    },
     // 获取cookie
     getCookie: function (cname) {
       let arr
@@ -234,28 +203,42 @@ export default {
     socketEvent () {
       this.$eventHub.$on('messagePush', (messageString) => {
         let message = JSON.parse(messageString)
-        this.workList.forEach((item, index) => {
-          if (+item.taskId === +message.messageBody.taskId) {
-            this.workList[index].msgCount++
+        if (localStorage.getItem('userSoundStatus')) {
+          if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
+            if (this.soundTimeout) {
+              clearTimeout(this.soundTimeout)
+              if (this.times >= 6) {
+                setTimeout(() => {
+                  this.times = 1
+                }, 10000)
+                return
+              }
+            }
+            this.soundTimeout = setTimeout(() => {
+              document.getElementById('tipAudio').play()
+              this.times++
+            }, 1000)
+          }
+        }
+        this.workList.forEach((item) => {
+          if (message.task_id && item.id === message.task_id) {
+            item.msgCount++
+            if (item.msgCount > 0) {
+              this.$refs[`msg_count_${item.id}`][0].style.display = 'inline-block'
+              if (item.msgCount >= 100) {
+                this.$refs[`msg_count_${item.id}`][0].innerHTML = '...'
+              } else {
+                this.$refs[`msg_count_${item.id}`][0].innerHTML = item.msgCount
+              }
+            } else {
+              this.$refs[`msg_count_${item.id}`][0].style.display = 'none'
+            }
           }
         })
       })
     },
     closePopShow () {
       this.popShow = false
-    },
-    // websocket长连接
-    reconnectSocket () {
-      setTimeout(() => {
-        this.client = getNewMQTT()
-        this.client.connect({
-          userName: 'web',
-          password: this.getCookie('userToken'),
-          keepAliveInterval: 10,
-          onSuccess: this.onConnect,
-          onFailure: this.errorFailure
-        })
-      }, 4000)
     }
   },
   directives: { Clickoutside }

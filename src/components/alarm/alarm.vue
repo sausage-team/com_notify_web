@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div class="alarm-main">
     <header-nav @getTask="getTask" ref="clearMsg"></header-nav>
@@ -9,7 +10,7 @@
           <span>总预警数量:</span>
           <span>{{alarmSumTotal}}</span>
           <span>占比:</span>
-          <span>{{alarmRate}}</span>
+          <span>{{(alarmRate > 0)?(alarmRate+'%'):(alarmRate)}}</span>
         </div>
         <div class="content-left-table pdb48 clearfix">
           <div class="content-left-table-inner">
@@ -38,8 +39,8 @@ import AlarmSelectButton from './plugins/AlarmSelectButton'
 import AlarmSelectList from './plugins/AlarmSelectList'
 import AlarmDetail from './plugins/AlarmDetail'
 import AlarmFeedbackPop from './plugins/AlarmFeedbackPop'
-import {getTitleList, getDataList, getAlarmFeedback} from '@/http/services/alarm_api'
-import {setReadMsg} from '@/http/services/task_api'
+import {getPushStat, getMsgDataList, ackMsg} from '@/http/services/alarm_api'
+// import {setReadMsg} from '@/http/services/task_api'
 
 export default {
   name: 'AlarmList',
@@ -54,7 +55,7 @@ export default {
   data () {
     return {
       loading: true,
-      taskId: null,
+      taskId: '',
       taskName: '',
       msgCount: '',
       columns1: [], // 表格列
@@ -106,9 +107,9 @@ export default {
       this.getDataList()
     },
     // 选择预警任务
-    getTask (taskId, taskName, msgCount) {
-      this.taskId = +taskId
-      this.taskName = taskName
+    getTask (taskId, msgCount) {
+      this.taskId = taskId
+      // this.taskName = taskName
       this.msgCount = msgCount
       this.popSelect = false
       this.popDetail = false
@@ -116,24 +117,36 @@ export default {
         this.tableWidth = document.getElementsByClassName('content-left-header')[0].clientWidth
       })
       // this.$refs.updateSelector.$emit('childMethod')
-      this.getTitleList()
+      this.getDataList()
+      this.getPushStatistics()
     },
-    // 查询预警信息表头
-    getTitleList () {
-      getTitleList({taskId: +this.taskId}).then(res => {
+    // 查询预警信息
+    getDataList (queryFilter) {
+      if (this.msgCount > 0) {
+        this.setReadMsg()
+      }
+      let params = {
+        taskId: this.taskId,
+        queryFilter: queryFilter,
+        offset: (this.pageNo - 1) * this.pageSize,
+        count: this.pageSize
+      }
+      getMsgDataList(params).then(res => {
         this.columns1 = []
         this.columns2 = []
         this.columnsType = []
-        res.data.result.forEach((item) => {
+        let schema = res.data.data.schema
+        let dataList = res.data.data.msg_list
+        schema.forEach((item) => {
           let temp = {}
-          switch (item.type) {
-            case 0:
+          switch (item.display_type) {
+            case 1:
               temp = {
                 title: '',
                 key: ''
               }
               break
-            case 1:
+            case 2:
               temp = {
                 title: '',
                 key: '',
@@ -154,7 +167,7 @@ export default {
                 }
               }
               break
-            case 2:
+            case 3:
               temp = {
                 title: '',
                 key: '',
@@ -175,11 +188,21 @@ export default {
               }
               break
           }
-          temp.title = item.fieldDesc
-          temp.key = item.fieldName
+          if (item.alias) {
+            temp.title = item.alias
+          } else {
+            temp.title = item.name
+          }
+          temp.key = item.id
           this.columns1.push(temp)
-          this.columnsType.push(item.type)
+          this.columnsType.push(item.display_type)
         })
+        let tempChannel = {
+          title: '推送通道',
+          key: 'channel',
+          width: 73,
+          fixed: 'right'
+        }
         let tempStatus = {
           title: '反馈状态',
           key: 'alarmStatus',
@@ -189,7 +212,7 @@ export default {
         let tempDetail = {
           title: '详情',
           key: 'detail',
-          width: 96,
+          width: 73,
           fixed: 'right',
           render: (h, params) => {
             return h('div', [
@@ -208,50 +231,47 @@ export default {
             ])
           }
         }
+        this.columns1.push(tempChannel)
         this.columns1.push(tempStatus)
         this.columns1.push(tempDetail)
-        this.getDataList()
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    // 查询数据列表
-    getDataList (selectorInput) {
-      let params = {
-        taskId: +this.taskId,
-        selectorInput: selectorInput,
-        pageNo: this.pageNo,
-        pageSize: this.pageSize
-      }
-      getDataList(params).then(res => {
+
         this.tableData = []
-        this.pageTotle = res.data.result.iTotalRecords
-        res.data.result.aaData.forEach((item) => {
+        this.pageTotle = res.data.data.total
+        dataList.forEach((item) => {
           let tempObj = {}
-          item.values.forEach((detail, index) => {
-            if (this.columnsType[index] === 1) {
-              tempObj[item.fieldName[index] + 'Url'] = detail[1]
-            } else if (this.columnsType[index] === 2) {
-              tempObj[item.fieldName[index] + 'Src'] = detail[1]
+          let detail = item.detail
+          for (var i = 0; i < this.columnsType.length; i++) {
+            let key = this.columns1[i]['key']
+            if (this.columnsType[i] === 1) {
+              tempObj[key] = detail[key]
+            } else if (this.columnsType[i] === 2) {
+              tempObj[key + 'Url'] = detail[key]
+            } else if (this.columnsType[i] === 3) {
+              tempObj[key + 'Src'] = detail[key]
             }
-            tempObj[item.fieldName[index]] = detail[0]
-          })
-          tempObj['alarmStatus'] = this.filterStatus(0, item.alarmStatus)
-          tempObj['alarmId'] = item.alarmId
+          }
+          tempObj['alarmStatus'] = this.filterStatus(0, item.ack)
+          tempObj['alarmId'] = item.id
+          tempObj['channel'] = item.channel_name
           this.tableData.push(tempObj)
         })
         if (this.tableData.length === 0) {
           this.columns1 = this.columns1.slice(0, -2)
         }
-        this.alarmTotalBySelector = res.data.result.otherData.alarmTotalBySelector
-        this.alarmSumTotal = res.data.result.otherData.alarmSumTotal
-        this.alarmRate = res.data.result.otherData.alarmRate
-        if (this.msgCount > 0) {
-          this.setReadMsg()
-        }
         this.resetTable()
       }).catch(error => {
         console.log(error)
+      })
+    },
+    getPushStatistics () {
+      let params = {
+        taskId: this.taskId
+      }
+      getPushStat(params).then(res => {
+        let data = res.data.data
+        this.alarmTotalBySelector = data.pushed
+        this.alarmSumTotal = data.total
+        this.alarmRate = data.rate
       })
     },
     // 重加载table
@@ -300,11 +320,12 @@ export default {
     },
     // 消息已读接口
     setReadMsg () {
-      setReadMsg({taskId: this.taskId}).then(res => {
-        this.$refs.clearMsg.clearMsg(this.taskId)
-      }).catch(error => {
-        console.log(error)
-      })
+      // setReadMsg({taskId: this.taskId}).then(res => {
+      //   this.$refs.clearMsg.clearMsg(this.taskId)
+      // }).catch(error => {
+      //   console.log(error)
+      // })
+      this.$refs.clearMsg.clearMsg(this.taskId)
     },
     // 表格页面跳转
     redirectPage (url) {
@@ -341,14 +362,14 @@ export default {
     // 提交反馈
     sendFeedback (feedback) {
       let params = {
-        taskId: +this.taskId,
-        alarmId: this.alarmId,
-        feedbackInfo: feedback
+        id: this.alarmId,
+        ack: 1,
+        ack_content: feedback
       }
-      getAlarmFeedback(params).then(res => {
+      ackMsg(params).then(res => {
         this.popFeed = false
         this.$refs.showDetail.$emit('showDetail', this.alarmId)
-        this.getTitleList({taskId: +this.taskId})
+        this.getDataList()
       }).catch(error => {
         console.log(error)
       })
@@ -356,8 +377,9 @@ export default {
     // 已签收
     signIn () {
       this.popDetail = false
-      this.getTitleList({taskId: +this.taskId})
+      this.getDataList()
     }
   }
 }
 </script>
+/* eslint-enable */
