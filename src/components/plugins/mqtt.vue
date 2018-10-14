@@ -9,7 +9,7 @@ export default {
       client: null,
       times: 1,
       topic: 'pc/web/' + this.getCookie('userId'),
-      mqttHost: '127.0.0.1',
+      mqttHost: '43.241.237.154',
       mqttPort: 19001,
       mqttUser: 'haizhi',
       path: '/pc_web',
