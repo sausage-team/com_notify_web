@@ -6,6 +6,7 @@
 </template>
 <script>
 import mqUtil from '@/components/plugins/mqtt.vue'
+
 export default {
   name: 'App',
   created () {

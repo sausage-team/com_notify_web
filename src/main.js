@@ -4,6 +4,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import ElementUI from 'element-ui'
 import iView from 'iview'
+import Push from 'push.js'
 import VueCookies from 'vue-cookies'
 
 import 'element-ui/lib/theme-chalk/index.css'
@@ -27,6 +28,7 @@ Vue.use(iView)
 Vue.use(Vuex)
 Vue.use(VueCookies)
 Vue.use(filter)
+Vue.use(Push)
 
 Vue.prototype.filterStatus = function (flag, val) {
   var res = ''
