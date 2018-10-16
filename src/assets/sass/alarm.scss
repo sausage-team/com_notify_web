@@ -92,6 +92,11 @@
           height: 100%;
           .el-table {
             border: 1px solid #ebeef5;
+            
+            .em {
+              color: #2979FF;
+              cursor: pointer;
+            }
           }
         }
       }

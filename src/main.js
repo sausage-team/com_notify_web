@@ -20,6 +20,20 @@ import httpFilter from './http/filters'
 import filter from './utils/filter'
 import App from './App'
 
+Vue.prototype.notification = (msg) => {
+  if (!('Notification' in window)) {
+    console.log('This browser does not support desktop notification')
+  } else if (Notification.permission === 'granted') {
+    return new Notification(msg)
+  } else if (Notification.permission !== 'denied' || Notification.permission === 'default') {
+    Notification.requestPermission(function (permission) {
+      if (permission === 'granted') {
+        return new Notification(msg)
+      }
+    })
+  }
+}
+
 Vue.prototype.$eventHub = Vue.prototype.$eventHub || new Vue()
 Vue.config.productionTip = false
 
