@@ -10,6 +10,7 @@ import mqUtil from '@/components/plugins/mqtt.vue'
 export default {
   name: 'App',
   created () {
+    this.notification('')
     if (!this.$cookies.get('token')) {
       this.$router.push('/login')
     }
