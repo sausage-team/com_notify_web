@@ -27,9 +27,8 @@
 </template>
 
 <script>
-import { signIn, getProfile } from '@/http/services/user_api'
-// import { startSub } from '@/utils/mqtt'
-import VueCookies from 'vue-cookies'
+import service from '@/http/services/index.js'
+// import {eventBus} from '@/utils/eventBus.js'
 export default {
   name: 'Login',
   data () {
@@ -49,51 +48,41 @@ export default {
       errorMsg: ''
     }
   },
+  created () {
+  },
   methods: {
-    getCookie (cname) {
-      let arr
-      let reg = new RegExp('(^| )' + cname + '=([^;]*)(;|$)')
-      if ((arr = document.cookie.match(reg))) return arr[2]
-      else return null
-    },
     signIn (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          const params = {
+          service.userService.signIn({
             username: this.loginForm.user,
             password: this.loginForm.password
-          }
-          signIn(params).then(res => {
-            if (res.status === 200 && res.data.status === 0) {
-              let data = res.data.data
-              VueCookies.set('token', data.access_token)
-              localStorage.setItem('token', data.access_token)
-              // VueCookies.set('userSoundStatus', res.data.result.userSoundStatus)
-              // VueCookies.set('userSoundURL', res.data.result.userSoundURL)
-              // VueCookies.set('username', res.data.result.userName)
+          }).then(res => {
+            if (res.status === 0) {
+              let data = res.data
+              this.$cookies.set('mqtt_ws', res.data.mqtt_ws)
+              this.$cookies.set('token', data.access_token)
               this.getUserInfo()
               if (!this.client) {
                 this.$emit('startSub')
               }
-              this.$router.push('/alarm')
             } else {
               if (this.data) {
                 this.errorMsg = this.data.msg
               }
             }
-          }).catch(error => {
-            console.log(error)
           })
         }
       })
     },
     getUserInfo () {
-      getProfile().then(res => {
-        if (res.status === 200 && res.data.status === 0) {
-          let data = res.data.data
-          VueCookies.set('userId', data.id)
-          VueCookies.set('username', data.name)
-          localStorage.setItem('userSoundStatus', data.sound_switch)
+      service.userService.getProfile().then(res => {
+        if (res.status === 0) {
+          let data = res.data
+          this.$cookies.set('userId', data.id)
+          this.$cookies.set('username', data.name)
+          this.$cookies.set('userSoundStatus', data.sound_switch)
+          this.$router.push('/alarm')
         }
       })
     }

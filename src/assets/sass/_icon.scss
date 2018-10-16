@@ -48,7 +48,7 @@ $root_url: '../imgs';
 
 @mixin user-icon {
   @include icon;
-  background-image: url('#{$root_url}/ava.png');
+  background-image: url('#{$root_url}/user-icon.png');
 }
 
 @mixin voice-on {
@@ -143,4 +143,9 @@ $root_url: '../imgs';
 @mixin minus-icon {
   @include icon;
   background-image: url('#{$root_url}/minus.png');
+}
+
+@mixin logout {
+  @include icon;
+  background-image: url('#{$root_url}/logout.png');
 }

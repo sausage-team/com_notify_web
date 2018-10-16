@@ -1,5 +1,4 @@
 import axios from 'axios'
-// import qs from 'qs'
 
 /**
  *
@@ -65,4 +64,8 @@ export function getGroupUsers (params) {
  */
 export function getUserPortraits () {
   return axios.post('/api/user/getUserPortraits')
+}
+
+export function getTaskDetail () {
+  return axios.get('/api')
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="hide"></div>
+  <div class="hide" @startHub="startSub"></div>
 </template>
 <script>
 import '@/lib/mqttws31'
@@ -7,26 +7,21 @@ export default {
   data () {
     return {
       client: null,
+      mqttStr: '',
       times: 1,
-      topic: 'pc/web/' + this.getCookie('userId'),
-      mqttHost: '43.241.237.154',
-      mqttPort: 19001,
+      topic: 'pc/web/' + this.$cookies.get('userId'),
+      mqttHost: '',
+      mqttPort: 0,
       mqttUser: 'haizhi',
       path: '/pc_web',
       mqttPassword: 'MpK2dTV8P',
-      clientId: 'web_' + this.getCookie('userId')
+      clientId: 'web_' + this.$cookies.get('userId')
     }
   },
   created () {
     this.taskMqtt()
   },
   methods: {
-    getCookie (cname) {
-      let arr
-      let reg = new RegExp('(^| )' + cname + '=([^;]*)(;|$)')
-      if ((arr = document.cookie.match(reg))) return arr[2]
-      else return null
-    },
     startSub () {
       this.createNewMqtt()
       this.client.connect({
@@ -87,21 +82,24 @@ export default {
     closeSub () {
       console.log('退出登录，断开连接', this.client)
       if (this.client) {
-        // topic.forEach(function (value) {
-        //   client.unsubscribe(value)
-        // })
         this.client.unsubscribe(this.topic)
         this.client.disconnect()
       }
     },
     taskMqtt () {
       setInterval(() => {
-        if (this.client) {
-          if (!this.client.isConnected()) {
-            this.reconnectSocket()
+        if (this.$cookies.get('token')) {
+          if (this.$cookies.get('mqtt_ws')) {
+            this.mqttHost = this.$cookies.get('mqtt_ws').split(':')[0]
+            this.mqttPort = parseInt(this.$cookies.get('mqtt_ws').split(':')[1])
+            if (this.client) {
+              if (!this.client.isConnected()) {
+                this.reconnectSocket()
+              }
+            } else if (this.$cookies.get('userId')) {
+              this.startSub()
+            }
           }
-        } else if (this.getCookie('userId')) {
-          this.startSub()
         }
       }, 10000)
     }

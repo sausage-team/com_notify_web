@@ -1,24 +1,11 @@
 import axios from 'axios'
-// import qs from 'qs'
 import iView from 'iview'
 import router from '../../router'
+import VueCookies from 'vue-cookies'
 axios.interceptors.request.use(
   config => {
-    // if (config.method === 'post') {
-    //   let data = qs.parse(config.data)
-    //   config.data = {
-    //     ts: Date.now(),
-    //     ...data
-    //   }
-    // } else
-    if (config.method === 'get') {
-      config.params = {
-        ts: Date.now(),
-        ...config.params
-      }
-    }
-    if (localStorage.getItem('token')) {
-      config.headers.Authorization = 'Bearer ' + localStorage.getItem('token')
+    if (VueCookies.get('token')) {
+      config.headers.Authorization = 'Bearer ' + VueCookies.get('token')
     }
     return config
   },

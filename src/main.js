@@ -1,11 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
 import Vuex from 'vuex'
 import ElementUI from 'element-ui'
 import iView from 'iview'
+import VueCookies from 'vue-cookies'
 
 import 'element-ui/lib/theme-chalk/index.css'
 import 'iview/dist/styles/iview.css'
@@ -26,7 +25,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(iView)
 Vue.use(Vuex)
-Vue.use(VueAxios, axios)
+Vue.use(VueCookies)
 Vue.use(filter)
 
 Vue.prototype.filterStatus = function (flag, val) {
