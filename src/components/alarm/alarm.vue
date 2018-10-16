@@ -117,6 +117,7 @@ import AlarmDetail from './plugins/AlarmDetail'
 import AlarmFeedbackPop from './plugins/AlarmFeedbackPop'
 import service from '@/http/services/index.js'
 import Push from 'push.js'
+
 export default {
   name: 'AlarmList',
   components: {
@@ -262,7 +263,7 @@ export default {
             }, 1000)
           }
         }
-        Push.create("你有一条新消息!", {
+        Push.create('你有一条新消息!', {
           body: message.title || '',
           icon: '@/assets/imgs/web.png',
           timeout: 4000,
