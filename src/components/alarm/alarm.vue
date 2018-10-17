@@ -173,6 +173,8 @@ export default {
         id: '',
         name: ''
       }
+      this.filterSchema = []
+      this.queryFilter = {}
       this.popDetail = false
       this.schema = []
       this.msg_list = []
