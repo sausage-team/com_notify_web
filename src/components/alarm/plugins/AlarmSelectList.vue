@@ -73,7 +73,7 @@ export default {
     taskId: String,
     popSelect: Boolean,
     queryFilter: Object,
-    schema: Object
+    schema: Array
   },
   watch: {
     popSelect (val) {

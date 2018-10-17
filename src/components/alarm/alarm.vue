@@ -45,8 +45,8 @@
             <el-table
               width="100%"
               height="100%"
-              :data="tableData.msg_list">
-              <el-table-column min-width="170" v-for="(item, index) in tableData.schema" :key="index" :label="item.alias || item.name">
+              :data="msg_list">
+              <el-table-column min-width="170" v-for="(item, index) in schema" :key="index" :label="item.alias || item.name">
                 <template slot-scope="scope">
                   <div v-if="item.display_type === 2">
                     <a @click="redirectPage(scope.row[item.id])"></a>
@@ -104,7 +104,7 @@
         @refresh="refresh" />
       <alarm-select-list
         :query-filter="queryFilter"
-        :schema="tableData"
+        :schema="schema"
         :task-id="this.chooseId"
         @applyFilter="applyFilter"
         @packUp="filterModal = false"
@@ -136,10 +136,8 @@ export default {
       msg_count: '',
       filterModal: false,
       workList: [],
-      tableData: {
-        schema: [],
-        msg_list: []
-      },
+      schema: [],
+      msg_list: [],
       filterSchema: [],
       popDetail: false,
       detailData: {
@@ -171,40 +169,43 @@ export default {
   },
   methods: {
     init () {
-      this.socketEvent()
       this.detailData = {
         id: '',
         name: ''
       }
       this.popDetail = false
-      if (this.$route.query && this.$route.query.id) {
-        this.getTaskList().then(res => {
-          this.chooseId = this.$route.query.id
-          this.workList.forEach(item => {
-            if (item.id === this.chooseId) {
-              this.chooseItem = item
-            }
-          })
-          this.getTask()
-        })
-      } else {
-        this.getTaskList().then(res => {
-          if (this.workList.length > 0) {
-            if (this.$route.query && this.$route.query.id) {
-              this.workList.forEach(item => {
-                if (item.id === this.chooseId) {
-                  this.chooseItem = item
-                }
-              })
-              this.getTask()
-            } else {
+      this.schema = []
+      this.msg_list = []
+      this.getTaskList().then(() => {
+        if (this.workList.length > 0) {
+          if (this.$route.query && this.$route.query.id) {
+            let id = this.$route.query.id
+            let check = false
+            this.workList.forEach(item => {
+              if (item.id === id) {
+                this.chooseItem = item
+                check = true
+              }
+            })
+            if (!check) {
               this.chooseItem = this.workList[0]
               this.chooseId = this.chooseItem.id
-              this.$router.push(`alarm?id=${this.chooseId}`)
+            } else {
+              this.chooseId = this.chooseItem.id
             }
+          } else {
+            this.chooseItem = this.workList[0]
+            this.chooseId = this.chooseItem.id
           }
-        })
-      }
+        } else {
+          this.chooseItem = {}
+          this.chooseId = ''
+        }
+        if (this.chooseId) {
+          this.getTask()
+        }
+        this.socketEvent()
+      })
     },
     getTaskList () {
       return new Promise((resolve, reject) => {
@@ -289,33 +290,29 @@ export default {
     },
     // 查询预警信息
     getDataList () {
-      // if (this.chooseItem.msg_count > 0) {
-      //   this.setReadMsg()
-      // }
       this.pageParam.offset = (this.pageParam.pageNo - 1) * this.pageParam.count
       let params = {
-        task_id: this.chooseItem.id,
+        task_id: this.chooseId,
         filter: this.queryFilter || {},
         offset: this.pageParam.offset,
         count: this.pageParam.count
       }
       service.alarmService.getMsgDataList(params).then(res => {
         if (res.status === 0) {
-          this.tableData = res.data
+          this.msg_list = res.data.msg_list
+          this.schema = res.data.schema
           this.pageParam.total = res.data.total
         }
-      }).catch(() => {})
+      })
     },
     getPushStatistics () {
-      let params = {
+      service.alarmService.getPushStat({
         taskId: this.chooseId
-      }
-      service.alarmService.getPushStat(params).then(res => {
+      }).then(res => {
         if (res.status === 0) {
-          let data = res.data
-          this.alarmTotalBySelector = data.pushed
-          this.alarmSumTotal = data.total
-          this.alarmRate = data.rate
+          this.alarmTotalBySelector = res.data.pushed
+          this.alarmSumTotal = res.data.total
+          this.alarmRate = res.data.rate
         }
       })
     },
