@@ -7,6 +7,11 @@
     <div class="login-body">
       <div class="login-body-content">
         <Form ref="loginForm" :model="loginForm" :rules="loginRules">
+          <FormItem prop="domain">
+            <Input type="text" v-model="loginForm.domain" placeholder="请输入企业域">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+            </Input>
+          </FormItem>
           <FormItem prop="user" required>
             <Input type="text" v-model="loginForm.user" placeholder="请输入用户名">
                 <Icon type="ios-person-outline" slot="prepend"></Icon>
@@ -28,18 +33,21 @@
 
 <script>
 import service from '@/http/services/index.js'
-// import {eventBus} from '@/utils/eventBus.js'
 export default {
   name: 'Login',
   data () {
     return {
       loginForm: {
+        domain: '',
         user: '',
         password: ''
       },
       loginRules: {
         user: [
           { required: true, message: '用户名不能为空', trigger: 'blur' }
+        ],
+        domain: [
+          { required: false }
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' }
@@ -55,6 +63,7 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           service.userService.signIn({
+            domain: this.loginForm.domain,
             username: this.loginForm.user,
             password: this.loginForm.password
           }).then(res => {
