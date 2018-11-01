@@ -25,7 +25,7 @@
             </div>
             <div class="row-con">
               <div class="row-url" :title="item.value" >
-                <a :href="item.value" target="_blank" >{{item.linkType === 0 ? item.value : item.showText}}</a>
+                <a :href="item.value" target="_blank" >{{(!item.linkType || item.linkType === 0) ? item.value : item.showText}}</a>
               </div>
             </div>
           </div>

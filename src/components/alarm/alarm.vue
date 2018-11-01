@@ -49,7 +49,7 @@
               <el-table-column min-width="170" v-for="(item, index) in schema" :key="index" :label="item.alias || item.name">
                 <template slot-scope="scope">
                   <div v-if="item.display_type === 2">
-                    <a @click="redirectPage(scope.row.detail[item.id])">{{scope.row.detail[item.id]}}</a>
+                    <a @click="redirectPage(scope.row.detail[item.id])">{{(!item.linkType || item.linkType === 0) ? item.value : item.showText}}</a>
                   </div>
                   <div v-else-if="item.display_type === 3">
                     <img style="max-width:100px;max-height:100px;" :src="`${scope.row.detail[item.id]}`" />
