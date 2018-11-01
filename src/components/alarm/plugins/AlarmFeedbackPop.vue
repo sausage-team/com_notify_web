@@ -7,7 +7,7 @@
           <i class="close-btn" @click="showFeedback"></i>
         </div>
         <div class="pop-input">
-          <textarea v-model="feedback"  placeholder="请输入反馈内容"  :class="feedback.length > 500 ? 'out-length-border' : ''"></textarea>
+          <textarea v-model="feedback"  placeholder="请输入反馈内容"  maxlength="500" :class="feedback.length > 500 ? 'out-length-border' : ''"></textarea>
         </div>
         <div class="limit" :class="feedback.length > 500 ? 'out-length-color' : ''">最多支持500字输入</div>
         <div class="btn-box">
@@ -40,6 +40,10 @@ export default {
     },
     // 发送反馈信息
     sendFeedback () {
+      if (!this.feedback) {
+        this.$Message.error('反馈内容不能为空')
+        return null
+      }
       service.alarmService.ackMsg({
         id: this.msgId,
         ack: 1,

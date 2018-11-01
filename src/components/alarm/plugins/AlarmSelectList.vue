@@ -22,7 +22,7 @@
           </div>
           <div class="item-box" v-if="item.display_type === 1">
             <div class="item-title">{{item.alias || item.name}}</div>
-            <Input v-model="queryFilter[item.id]" :ref="item.id" class="item-input" placeholder="请输入内容"></Input>
+            <Input :maxlength="16" v-model="queryFilter[item.id]" :ref="item.id" class="item-input" placeholder="请输入内容"></Input>
           </div>
           <div class="item-box" v-if="item.flag === 110">
             <div class="item-title">{{item.alias || item.name}}</div>
@@ -127,13 +127,14 @@ export default {
     // 还原
     clearAll () {
       this.filterSchema.forEach(item => {
+        this.$refs[item.id][0].handleClear()
         if (item.display_type === 2) {
           this.queryFilter[item.id] = []
         } else {
-          this.queryFilter = ''
+          this.queryFilter[item.id] = ''
         }
+        this.$forceUpdate()
       })
-      this.$forceUpdate()
     },
     // 收起筛选器
     packUp () {
