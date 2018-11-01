@@ -29,7 +29,7 @@
               </div>
             </div>
           </div>
-          <div class="row-item" v-if="item.type === 3">
+          <div class="row-item" v-if="item.display_type === 3">
             <div class="row-title">
               <span :title="item.name">{{item.name}}</span>
             </div>
