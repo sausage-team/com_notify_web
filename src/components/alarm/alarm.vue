@@ -250,6 +250,7 @@ export default {
     },
     socketEvent () {
       this.$eventHub.$on('messagePush', (messageString) => {
+        console.log(messageString)
         let message = JSON.parse(messageString)
         if (localStorage.getItem('userSoundStatus')) {
           if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
