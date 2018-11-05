@@ -153,6 +153,8 @@ export default {
         count: 20,
         total: 0
       },
+      tmpNotice: [],
+      tmpTimeOut: null,
       queryFilter: {},
       alarmTotalBySelector: 0, // 结果预警量
       alarmSumTotal: 0, // 总预警量
@@ -206,8 +208,14 @@ export default {
         if (this.chooseId) {
           this.getTask()
         }
-        this.socketEvent()
       })
+      if (!this.$cookies.get('token')) {
+        this.$store.dispatch('closeSub')
+      } else {
+        this.$store.dispatch('taskMqtt', (message) => {
+          this.socketEvent(message)
+        })
+      }
     },
     getTaskList () {
       return new Promise((resolve, reject) => {
@@ -248,52 +256,65 @@ export default {
         }
       })
     },
-    socketEvent () {
-      this.$eventHub.$on('messagePush', (messageString) => {
-        console.log(messageString)
-        let message = JSON.parse(messageString)
-        if (localStorage.getItem('userSoundStatus')) {
-          if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
-            if (this.soundTimeout) {
-              clearTimeout(this.soundTimeout)
-              if (this.times >= 6) {
-                setTimeout(() => {
-                  this.times = 1
-                }, 10000)
-                return
-              }
+    socketEvent (messageString) {
+      let message = JSON.parse(messageString)
+      this.tmpNotice.push(message)
+      if (localStorage.getItem('userSoundStatus')) {
+        if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
+          if (this.soundTimeout) {
+            clearTimeout(this.soundTimeout)
+            if (this.times >= 6) {
+              setTimeout(() => {
+                this.times = 1
+              }, 10000)
+              return
             }
-            this.soundTimeout = setTimeout(() => {
-              document.getElementById('tipAudio').play()
-              this.times++
-            }, 1000)
           }
+          this.soundTimeout = setTimeout(() => {
+            document.getElementById('tipAudio').play()
+            this.times++
+          }, 1000)
         }
-        this.notification(message.title)
-        // this.init()
-        let check = false
-        this.workList.forEach(item => {
-          if (message.task_id && item.id === message.task_id) {
-            item.msg_count++
-            check = true
+      }
+      if (!this.tmpTimeOut) {
+        this.tmpTimeOut = setTimeout(() => {
+          if (this.tmpNotice.length >= 6) {
+            clearTimeout(this.tmpTimeOut)
+            this.tmpTimeOut = setTimeout(() => {
+              this.tmpNotice = []
+              clearTimeout(this.tmpNotice)
+              this.init()
+            }, 3000)
+          } else {
+            clearTimeout(this.tmpTimeOut)
+            this.init()
           }
-          if (this.$route.query.id === message.task_id) {
-            this.getTask()
-          }
-        })
-        if (!check) {
-          service.alarmService.getMsgListTry({
-            task_id: message.task_id
-          }).then(res => {
-            if (res.status === 0) {
-              if (!res.data.msg_count) {
-                res.data.msg_count = 1
-              }
-              this.workList.splice(0, 1, res.data)
-            }
-          })
-        }
-      })
+        }, 1000)
+      }
+
+      // this.notification(message.title)
+      // let check = false
+      // this.workList.forEach(item => {
+      //   if (message.task_id && item.id === message.task_id) {
+      //     item.msg_count++
+      //     check = true
+      //   }
+      //   if (this.$route.query.id === message.task_id) {
+      //     this.getTask()
+      //   }
+      // })
+      // if (!check) {
+      //   service.alarmService.getMsgListTry({
+      //     task_id: message.task_id
+      //   }).then(res => {
+      //     if (res.status === 0) {
+      //       if (!res.data.msg_count) {
+      //         res.data.msg_count = 1
+      //       }
+      //       this.workList.splice(0, 1, res.data)
+      //     }
+      //   })
+      // }
     },
     // 查询预警信息
     getDataList () {

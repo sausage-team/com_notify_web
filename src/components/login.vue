@@ -9,7 +9,7 @@
         <Form ref="loginForm" :model="loginForm" :rules="loginRules">
           <FormItem prop="domain">
             <Input type="text" v-model="loginForm.domain" placeholder="请输入企业域">
-                <Icon type="ios-person-outline" slot="prepend"></Icon>
+                <Icon type="ios-home-outline" slot="prepend"></Icon>
             </Input>
           </FormItem>
           <FormItem prop="user" required>
