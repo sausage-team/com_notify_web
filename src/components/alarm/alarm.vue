@@ -198,8 +198,9 @@ export default {
               this.chooseId = this.chooseItem.id
             }
           } else {
-            this.chooseItem = this.workList[0]
-            this.chooseId = this.chooseItem.id
+            if (this.workList.length > 0) {
+              this.$router.push(`/alarm?id=${this.workList[0].id}`)
+            }
           }
         } else {
           this.chooseItem = {}
@@ -252,7 +253,8 @@ export default {
         task_id: item.id
       }).then(res => {
         if (res.status === 0) {
-          this.init()
+          // this.init()
+          this.$router.push(`/alarm?id=${item.id}`)
         }
       })
     },
