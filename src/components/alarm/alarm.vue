@@ -155,6 +155,7 @@ export default {
       },
       tmpNotice: [],
       tmpTimeOut: null,
+      tmpTimeOut1: null,
       queryFilter: {},
       alarmTotalBySelector: 0, // 结果预警量
       alarmSumTotal: 0, // 总预警量
@@ -261,6 +262,7 @@ export default {
     socketEvent (messageString) {
       let message = JSON.parse(messageString)
       this.tmpNotice.push(message)
+      this.notification(message.title)
       if (localStorage.getItem('userSoundStatus')) {
         if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
           if (this.soundTimeout) {
@@ -280,13 +282,14 @@ export default {
       }
       if (!this.tmpTimeOut) {
         this.tmpTimeOut = setTimeout(() => {
-          if (this.tmpNotice.length >= 6) {
-            clearTimeout(this.tmpTimeOut)
-            this.tmpTimeOut = setTimeout(() => {
-              this.tmpNotice = []
-              clearTimeout(this.tmpNotice)
-              this.init()
-            }, 3000)
+          if (this.tmpNotice.length >= 10) {
+            if (!this.tmpTimeOut1) {
+              this.tmpTimeOut1 = setTimeout(() => {
+                this.tmpNotice = []
+                clearTimeout(this.tmpTimeOut)
+                this.init()
+              }, 2000)
+            }
           } else {
             clearTimeout(this.tmpTimeOut)
             this.init()
