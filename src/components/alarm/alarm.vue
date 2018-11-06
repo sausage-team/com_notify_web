@@ -37,11 +37,11 @@
                 </ul>
               </div>
             </Poptip>
-            <Button type="primary" @click="filterModal = true">高级筛选</Button>
+            <Button type="primary" v-show="schema && schema.length > 0" @click="filterModal = true">高级筛选</Button>
           </div>
         </div>
         <div class="content-left-table">
-          <div class="content-left-table-inner">
+          <div class="content-left-table-inner" v-show="schema && schema.length > 0">
             <el-table
               width="100%"
               height="100%"
@@ -74,7 +74,7 @@
             </el-table>
           </div>
         </div>
-        <div class="content-left-footer">
+        <div class="content-left-footer" v-show="schema && schema.length > 0">
           <div class="content-left-footer-inner">
             <Page :total="pageParam.total"
               :current.sync="pageParam.pageNo"
