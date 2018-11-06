@@ -6,7 +6,7 @@
         <i @click="packUp"></i>
       </div>
       <div  class="content-right"  >
-        <div class="select-item" v-for="(item, index) in filterSchema" :key = 'index'>
+        <div class="select-item" v-show="filterSchema && filterSchema.length > 0" v-for="(item, index) in filterSchema" :key = 'index'>
           <div class="item-box item-date-time" v-if="item.display_type === 2">
             <div class="item-title">{{item.alias || item.name}}</div>
             <div class="item-date-box">
@@ -46,6 +46,9 @@
               </el-option>
             </el-select>
           </div>
+        </div>
+        <div class="select-empty" v-show="!filterSchema || filterSchema.length === 0">
+          <span>暂无筛选条件</span>
         </div>
       </div>
       <div class="select-operate">
