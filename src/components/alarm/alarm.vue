@@ -254,7 +254,9 @@ export default {
         task_id: item.id
       }).then(res => {
         if (res.status === 0) {
-          // this.init()
+          if (item.id === this.chooseId) {
+            this.init()
+          }
           this.$router.push(`/alarm?id=${item.id}`)
         }
       })
