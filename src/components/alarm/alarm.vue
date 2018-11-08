@@ -211,13 +211,15 @@ export default {
           this.getTask()
         }
       })
-      if (!this.$cookies.get('token')) {
-        this.$store.dispatch('closeSub')
-      } else {
-        this.$store.dispatch('taskMqtt', (message) => {
-          this.socketEvent(message)
-        })
-      }
+      setTimeout(() => {
+        if (!this.$cookies.get('token')) {
+          this.$store.dispatch('closeSub')
+        } else {
+          this.$store.dispatch('taskMqtt', (message) => {
+            this.socketEvent(message)
+          })
+        }
+      })
     },
     getTaskList () {
       return new Promise((resolve, reject) => {

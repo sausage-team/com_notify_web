@@ -7,9 +7,8 @@ const state = {
   topic: '',
   mqttHost: '',
   mqttPort: 0,
-  mqttUser: 'haizhi',
-  path: '/pc_web',
-  mqttPassword: 'MpK2dTV8P',
+  mqttUser: '',
+  mqttPassword: '',
   clientId: '',
   onConnectionLost: null,
   onMessageArrived: null,
@@ -28,8 +27,7 @@ const actions = {
             state.client = new window.Paho.MQTT.Client(
               state.mqttHost,
               state.mqttPort,
-              state.path,
-              state.clientId + '_' + Date.now()
+              state.clientId
             )
           }
           state.client.connect({
@@ -72,8 +70,7 @@ const actions = {
             state.client = new window.Paho.MQTT.Client(
               state.mqttHost,
               state.mqttPort,
-              state.path,
-              state.clientId + '_' + Date.now()
+              state.clientId
             )
           }
           state.client.connect({
@@ -93,6 +90,8 @@ const actions = {
     if (VueCookies.get('userId')) {
       state.topic = `pc/web/${VueCookies.get('userId')}`
       state.clientId = `web_${VueCookies.get('userId')}`
+      state.mqttUser = `${VueCookies.get('username') ? VueCookies.get('username') : 'haizhi'}`
+      state.mqttPassword = `${VueCookies.get('token')}`
     }
     setInterval(() => {
       if (VueCookies.get('token')) {
@@ -106,8 +105,7 @@ const actions = {
                   state.client = new window.Paho.MQTT.Client(
                     state.mqttHost,
                     state.mqttPort,
-                    state.path,
-                    state.clientId + '_' + Date.now()
+                    state.clientId
                   )
                 }
                 state.client.connect({
@@ -151,8 +149,7 @@ const actions = {
         state.client = new window.Paho.MQTT.Client(
           state.mqttHost,
           state.mqttPort,
-          state.path,
-          state.clientId + '_' + Date.now()
+          state.clientId
         )
         state.client.onConnectionLost = state.onConnectionLost
         state.client.onMessageArrived = state.onMessageArrived
@@ -161,10 +158,12 @@ const actions = {
   },
 
   closeSub () {
-    console.log('退出登录，断开连接', state.client)
+    console.log('退出登录，断开连接', state.client, state.topic)
     if (state.client) {
       state.client.unsubscribe(state.topic)
-      state.client.disconnect()
+      if (state.client.isConnected()) {
+        state.client.disconnect()
+      }
     }
   }
 }

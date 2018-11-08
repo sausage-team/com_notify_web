@@ -87,7 +87,8 @@ export default {
         if (res.status === 0) {
           let data = res.data
           this.$cookies.set('userId', data.id)
-          this.$cookies.set('username', data.name)
+          this.$cookies.set('username', data.username)
+          this.$cookies.set('name', data.name)
           this.$cookies.set('userSoundStatus', data.sound_switch)
           this.$router.push('/alarm')
         }

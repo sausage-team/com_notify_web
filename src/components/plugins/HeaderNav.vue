@@ -34,7 +34,7 @@ export default {
     return {
       title: '海致数据推送中心',
       subTitle: 'Intellgence PushCenter',
-      username: this.$cookies.get('username'),
+      username: this.$cookies.get('name'),
       volstatus: localStorage.getItem('userSoundStatus')
     }
   },
@@ -46,9 +46,10 @@ export default {
           this.$cookies.remove('userId')
           this.$cookies.remove('userSoundStatus')
           this.$cookies.remove('username')
+          this.$cookies.remove('name')
           this.$cookies.remove('mqtt_ws')
-          this.$router.push('/login')
           this.$store.dispatch('closeSub')
+          this.$router.push('/login')
         })
     },
     setVolswitch (index) {
