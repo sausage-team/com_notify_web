@@ -48,8 +48,8 @@ export default {
           this.$cookies.remove('username')
           this.$cookies.remove('name')
           this.$cookies.remove('mqtt_ws')
-          this.$store.dispatch('closeSub')
           this.$router.push('/login')
+          this.$store.dispatch('closeSub')
         })
     },
     setVolswitch (index) {
