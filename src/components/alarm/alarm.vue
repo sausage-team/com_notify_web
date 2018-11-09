@@ -164,6 +164,17 @@ export default {
   },
   created () {
     this.init()
+    setTimeout(() => {
+      if (!this.$cookies.get('token')) {
+        if (this.$store.state.client) {
+          this.$store.dispatch('closeSub')
+        }
+      } else {
+        this.$store.dispatch('taskMqtt', (message) => {
+          this.socketEvent(message)
+        })
+      }
+    })
   },
   watch: {
     '$route' () {
@@ -209,15 +220,6 @@ export default {
         }
         if (this.chooseId) {
           this.getTask()
-        }
-      })
-      setTimeout(() => {
-        if (!this.$cookies.get('token')) {
-          this.$store.dispatch('closeSub')
-        } else {
-          this.$store.dispatch('taskMqtt', (message) => {
-            this.socketEvent(message)
-          })
         }
       })
     },

@@ -8,7 +8,9 @@ export default {
   name: 'App',
   created () {
     if (!this.$cookies.get('token')) {
-      this.$store.dispatch('closeSub')
+      if (this.$store.state.client) {
+        this.$store.dispatch('closeSub')
+      }
       this.$router.push('/login')
     }
   }

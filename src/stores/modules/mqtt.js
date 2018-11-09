@@ -1,5 +1,7 @@
-import '@/lib/mqttws31'
 import VueCookies from 'vue-cookies'
+// import '@/lib/mqttws31.js'
+const mqtt = require('mqtt')
+const url = require('url')
 
 const state = {
   client: null,
@@ -17,73 +19,23 @@ const state = {
 }
 
 const actions = {
-  initOnConnectionLost ({state}) {
-    state.onConnectionLost = (responseObject) => {
-      if (responseObject.errorCode !== 0) {
-        console.log('onConnectionLost:' + responseObject.errorMessage)
-        console.log('连接已断开')
-        setTimeout(() => {
-          if (!state.client) {
-            state.client = new window.Paho.MQTT.Client(
-              state.mqttHost,
-              state.mqttPort,
-              state.clientId
-            )
-          }
-          state.client.connect({
-            userName: state.mqttUser,
-            password: state.mqttPassword,
-            keepAliveInterval: 10,
-            cleanSession: false,
-            onSuccess: state.onConnectSuccess,
-            onFailure: state.errorFailure
-          })
-        }, 4000)
-      }
-    }
+  initClient ({state}) {
+    state.client = mqtt.connect(url.parse(`ws://${state.mqttHost}:${state.mqttPort}`), {
+      clientId: state.clientId,
+      username: state.mqttUser,
+      password: state.mqttPassword,
+      path: '/mqtt'
+    })
   },
-
-  initOnMessageArrived ({state}, hand) {
-    state.onMessageArrived = (message) => {
-      // 直接拿message.payloadString就是服务端传来的消息
-      console.log('收到消息:' + message.payloadString)
-      if (hand) {
-        hand(message.payloadString)
-      }
-    }
+  initConnect ({state}) {
+    state.client.on('connect', () => {
+      console.log('mqtt 连接成功')
+    })
   },
-
-  initOnConnectSuccess ({state}) {
-    if (!state.onConnectSuccess) {
-      state.onConnectSuccess = () => {
-        console.log('mqtt connected success, subscribe topic: ' + state.topic)
-        state.client.subscribe(state.topic)
-      }
-    }
-  },
-
-  initErrorFailure ({state}) {
-    if (!state.errorFailure) {
-      state.errorFailure = () => {
-        setTimeout(() => {
-          if (!state.client) {
-            state.client = new window.Paho.MQTT.Client(
-              state.mqttHost,
-              state.mqttPort,
-              state.clientId
-            )
-          }
-          state.client.connect({
-            userName: state.mqttUser,
-            password: state.mqttPassword,
-            keepAliveInterval: 10,
-            cleanSession: false,
-            onSuccess: state.onConnectSuccess,
-            onFailure: state.errorFailure
-          })
-        }, 4000)
-      }
-    }
+  initSubscribe () {
+    state.client.subscribe(state.topic, () => {
+      console.log(`${state.topic} 订阅成功`)
+    })
   },
 
   taskMqtt ({state, dispatch}, hand) {
@@ -93,77 +45,38 @@ const actions = {
       state.mqttUser = `${VueCookies.get('username') ? VueCookies.get('username') : 'haizhi'}`
       state.mqttPassword = `${VueCookies.get('token')}`
     }
-    setInterval(() => {
-      if (VueCookies.get('token')) {
-        if (VueCookies.get('mqtt_ws')) {
-          state.mqttHost = VueCookies.get('mqtt_ws').split(':')[0]
-          state.mqttPort = parseInt(VueCookies.get('mqtt_ws').split(':')[1])
-          if (state.client) {
-            if (!state.client.isConnected()) {
-              setTimeout(() => {
-                if (!state.client) {
-                  state.client = new window.Paho.MQTT.Client(
-                    state.mqttHost,
-                    state.mqttPort,
-                    state.clientId
-                  )
-                }
-                state.client.connect({
-                  userName: state.mqttUser,
-                  password: state.mqttPassword,
-                  keepAliveInterval: 10,
-                  cleanSession: false,
-                  onSuccess: state.onConnectSuccess,
-                  onFailure: state.errorFailure
-                })
-              }, 4000)
-            }
-          } else if (VueCookies.get('userId')) {
-            dispatch('startSub', hand)
-          }
+    if (VueCookies.get('token')) {
+      if (VueCookies.get('mqtt_ws')) {
+        state.mqttHost = VueCookies.get('mqtt_ws').split(':')[0]
+        state.mqttPort = parseInt(VueCookies.get('mqtt_ws').split(':')[1])
+        if (!state.client) {
+          dispatch('initClient')
+          dispatch('initSubscribe').then(() => {
+            state.client.on('message', (topic, message, data) => {
+              console.log(message.toString())
+              if (hand) {
+                hand(message.toString())
+              }
+            })
+          })
+        }
+        if (!state.client.connected) {
+          dispatch('initConnect')
         }
       }
-    }, 10000)
-  },
-
-  startSub ({state, dispatch}, hand) {
-    dispatch('createNewMqtt', hand).then(() => {
-      dispatch('initOnConnectSuccess').then(() => {
-        dispatch('initErrorFailure').then(() => {
-          state.client.connect({
-            userName: state.mqttUser,
-            password: state.mqttPassword,
-            keepAliveInterval: 10,
-            cleanSession: false,
-            onSuccess: state.onConnectSuccess,
-            onFailure: state.errorFailure
-          })
-        })
-      })
-    })
-  },
-
-  createNewMqtt ({state, dispatch}, hand) {
-    dispatch('initOnConnectionLost').then(() => {
-      dispatch('initOnMessageArrived', hand).then(() => {
-        state.client = new window.Paho.MQTT.Client(
-          state.mqttHost,
-          state.mqttPort,
-          state.clientId
-        )
-        state.client.onConnectionLost = state.onConnectionLost
-        state.client.onMessageArrived = state.onMessageArrived
-      })
-    })
+    }
   },
 
   closeSub () {
-    console.log('退出登录，断开连接', state.client, state.topic)
+    console.log('退出登录，断开连接', state.topic)
     if (state.client) {
       state.client.unsubscribe(state.topic)
-      if (state.client.isConnected()) {
-        state.client.disconnect()
+      if (state.client.connected) {
+        state.client.end()
       }
+      setTimeout(() => {
+        state.client = null
+      })
     }
   }
 }

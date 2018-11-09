@@ -72,7 +72,9 @@ export default {
               this.$cookies.set('mqtt_ws', res.data.mqtt_ws)
               this.$cookies.set('token', data.access_token)
               this.getUserInfo()
-              this.$store.dispatch('closeSub')
+              if (this.$store.state.client) {
+                this.$store.dispatch('closeSub')
+              }
             } else {
               if (this.data) {
                 this.errorMsg = this.data.msg
