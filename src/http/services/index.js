@@ -133,6 +133,13 @@ const service = {
         TEMPLATE_POST('/api/dict/dictInfo', data, resolve)
       })
     }
+  },
+  messageService: {
+    getMsgDataList: (data) => {
+      // return new Promise((resolve, reject) => {
+      //   TEMPLATE_POST('/api/msg/list', data, resolve)
+      // })
+    }
   }
 }
 

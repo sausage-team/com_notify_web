@@ -92,7 +92,7 @@ export default {
           this.$cookies.set('username', data.username)
           this.$cookies.set('name', data.name)
           this.$cookies.set('userSoundStatus', data.sound_switch)
-          this.$router.push('/alarm')
+          this.$router.push('messages')
         }
       })
     }

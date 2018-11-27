@@ -1,7 +1,6 @@
 /* eslint-disable */
 <template>
   <div class="alarm-main">
-    <header-nav />
     <div class="content">
       <div class="content-left">
         <div class="con-left-body">
@@ -90,19 +89,19 @@
           </div>
         </div>
       </div>
-      <alarm-detail
+      <push-detail
         :msgId="detailData.id"
         :taskName="detailData.name"
         :popDetail="popDetail"
         @feedback="feedback"
         @refresh="refresh"
         @closeDetail="closeDetail" />
-      <alarm-feedback-pop
+      <push-feedback-pop
         :msgId="detailData.id"
         :popFeed="popFeed"
         @showFeedback="showFeedback"
         @refresh="refresh" />
-      <alarm-select-list
+      <push-select-list
         :query-filter="queryFilter"
         :schema="schema"
         :task-id="this.chooseId"
@@ -114,19 +113,17 @@
 </template>
 
 <script>
-import HeaderNav from '@/components/plugins/HeaderNav'
-import AlarmSelectList from './plugins/AlarmSelectList'
-import AlarmDetail from './plugins/AlarmDetail'
-import AlarmFeedbackPop from './plugins/AlarmFeedbackPop'
+import PushSelectList from '@/pages/push/PushSelectList'
+import PushDetail from '@/pages/push/PushDetail'
+import PushFeedbackPop from '@/pages/push/PushFeedbackPop'
 import service from '@/http/services'
 
 export default {
-  name: 'AlarmList',
+  name: 'PushList',
   components: {
-    HeaderNav,
-    AlarmSelectList,
-    AlarmDetail,
-    AlarmFeedbackPop
+    PushSelectList,
+    PushDetail,
+    PushFeedbackPop
   },
   data () {
     return {
@@ -211,7 +208,7 @@ export default {
             }
           } else {
             if (this.workList.length > 0) {
-              this.$router.push(`/alarm?id=${this.workList[0].id}`)
+              this.$router.push(`/pushes?id=${this.workList[0].id}`)
             }
           }
         } else {
@@ -261,7 +258,7 @@ export default {
           if (item.id === this.chooseId) {
             this.init()
           }
-          this.$router.push(`/alarm?id=${item.id}`)
+          this.$router.push(`/pushes?id=${item.id}`)
         }
       })
     },

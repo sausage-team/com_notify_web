@@ -26,7 +26,6 @@ html,
 body {
   width: 100%;
   height: 100%;
-  overflow: hidden;
 }
 
 //去除登录页面在chrome下的用户名密码自动填充样式
@@ -277,7 +276,6 @@ input:-webkit-autofill {
 
 html {
   height: 100%;
-  overflow: hidden;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

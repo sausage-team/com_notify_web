@@ -82,6 +82,11 @@ export default {
         this.$router.push(type)
       }
     }
+  },
+  watch: {
+    '$route' (to, from) {
+      this.chooseType = this.$route.name
+    }
   }
 }
 </script>
