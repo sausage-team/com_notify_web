@@ -2,7 +2,7 @@ const filter = {
   status: (Vue, option) => {
     // 状态转换
     Vue.prototype.filterStatus = function (flag, val) {
-      var res = '';
+      let res = ''
       if (flag === 0) {
         if (val === 0) {
           res = '已发送'
@@ -15,6 +15,6 @@ const filter = {
       return res
     }
   }
-};
+}
 
 export default filter

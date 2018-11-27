@@ -126,6 +126,13 @@ const service = {
         TEMPLATE_GET('/api/msg/read_all', data, resolve)
       })
     }
+  },
+  dicService: {
+    getDictInfo (data) {
+      return new Promise((resolve, reject) => {
+        TEMPLATE_POST('/api/dict/dictInfo', data, resolve)
+      })
+    }
   }
 }
 

@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import {getDictInfo} from '@/http/services/dic_api'
 import service from '@/http/services'
 
 export default {
@@ -114,7 +113,7 @@ export default {
     },
     // 字典详情
     getDictInfo (id) {
-      getDictInfo({dicId: id}).then(res => {
+      service.dicService.getDictInfo({dicId: id}).then(res => {
         this.dicList = res.data.result
       }).catch(error => {
         console.log(error)
