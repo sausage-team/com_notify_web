@@ -7,6 +7,22 @@
         <div class="title-item2">{{subTitle}}</div>
       </div>
     </div>
+    <div class="header-con">
+      <Menu mode="horizontal" theme="primary" :active-name="chooseType">
+        <MenuItem name="messages" @click.native="chooseMenu($event, 'messages')">
+            <span>消息盒子</span>
+            <i></i>
+        </MenuItem>
+        <MenuItem name="follows" @click.native="chooseMenu($event, 'follows')">
+            <span>关注列表</span>
+            <i></i>
+        </MenuItem>
+        <MenuItem name="pushes" @click.native="chooseMenu($event, 'pushes')">
+            <span>推送记录</span>
+            <i></i>
+        </MenuItem>
+      </Menu>
+    </div>
     <div class="header-right">
       <div class="header-right-setting">
         <div class="user">
@@ -35,7 +51,8 @@ export default {
       title: '海致数据推送中心',
       subTitle: 'Intellgence PushCenter',
       username: this.$cookies.get('name'),
-      volstatus: localStorage.getItem('userSoundStatus')
+      volstatus: localStorage.getItem('userSoundStatus'),
+      chooseType: this.$route.name
     }
   },
   methods: {
@@ -59,6 +76,11 @@ export default {
           localStorage.setItem('userSoundStatus', index)
         }
       })
+    },
+    chooseMenu (e, type) {
+      if (this.chooseType !== type) {
+        this.$router.push(type)
+      }
     }
   }
 }
