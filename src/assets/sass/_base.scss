@@ -2,8 +2,6 @@
 @import '_icon.scss';
 @import '_color.scss';
 @import '_animate.scss';
-@import '_layout.scss';
-@import '_items.scss';
 
 /**
 
@@ -36,8 +34,8 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-transition-delay: 9999999999999s;
-  -webkit-transition: color 9999999999999s ease-out, background-color 9999999999999s ease-out;
+  transition-delay: 9999999999999s;
+  transition: color 9999999999999s ease-out, background-color 9999999999999s ease-out;
 }
 
 @mixin v-center {
@@ -240,7 +238,7 @@ input:-webkit-autofill:active {
 }
 
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px white inset;
+  box-shadow: 0 0 0px 1000px white inset;
 }
 
 /*滚动条*/
@@ -467,7 +465,6 @@ html {
 
 // 登录页密码输入框样式
 .input-password {
-  text-security: disc;
   -webkit-text-security: disc;
   -mox-text-security: disc;
 }

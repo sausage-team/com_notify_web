@@ -1,6 +1,6 @@
 import axios from 'axios'
 import iView from 'iview'
-import router from '../../router'
+import router from '@/router'
 import store from '@/stores'
 import VueCookies from 'vue-cookies'
 
