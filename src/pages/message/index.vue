@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import CardDetail from '@/pages/message/CardDetail'
-import CardFooter from '@/pages/message/CardFooter'
-import TimeTypeFilter from '@/pages/message/TimeTypeFilter'
+import CardDetail from '@/components/CardDetail'
+import CardFooter from '@/components/CardFooter'
+import TimeTypeFilter from '@/components/TimeTypeFilter'
 export default {
   name: 'MessageList',
   components: {

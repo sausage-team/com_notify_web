@@ -50,8 +50,8 @@
 </template>
 
 <script>
-import TimeTypeFilter from '@/pages/message/TimeTypeFilter'
-import CardDetail from '@/pages/message/CardDetail'
+import TimeTypeFilter from '@/components/TimeTypeFilter'
+import CardDetail from '@/components/CardDetail'
 export default {
   components: {
     TimeTypeFilter,

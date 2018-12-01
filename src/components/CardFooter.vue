@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Feedback from '@/pages/message/Feedback'
+import Feedback from '@/components/Feedback'
 export default {
   components: {
     Feedback

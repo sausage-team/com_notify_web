@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import CardFooter from '@/pages/message/CardFooter'
+import CardFooter from '@/components/CardFooter'
 export default {
   components: {
     CardFooter
