@@ -3,6 +3,8 @@
 @import 'login.scss';
 @import 'header.scss';
 @import 'alarm.scss';
+@import "message.scss";
+@import "follow.scss";
 
 
 .app,
@@ -10,4 +12,5 @@
     height: 100%;
     width: 100%;
     min-width: 756px;
+    background-color: $main-bg-color;
 }
