@@ -32,9 +32,7 @@
 </template>
 
 <script>
-import service from '@/http/services/index.js'
 export default {
-  name: 'Login',
   data () {
     return {
       loginForm: {
@@ -62,7 +60,7 @@ export default {
     signIn (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          service.userService.signIn({
+          this.userService.signIn({
             domain: this.loginForm.domain,
             username: this.loginForm.user,
             password: this.loginForm.password
@@ -85,7 +83,7 @@ export default {
       })
     },
     getUserInfo () {
-      service.userService.getProfile().then(res => {
+      this.userService.getProfile().then(res => {
         if (res.status === 0) {
           let data = res.data
           this.$cookies.set('userId', data.id)

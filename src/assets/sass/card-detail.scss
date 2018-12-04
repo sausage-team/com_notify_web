@@ -1,5 +1,4 @@
-@import "_color.scss";
-@import "_element.scss";
+
 .msg-detail-model {
     width: 400px;
     .ivu-modal-header {
@@ -28,7 +27,6 @@
     .ivu-modal-footer {
       padding-top: 2px;
       .btn {
-        @include btn;
         &.no-bg {
             background-color: unset;
             color: $btn-main-color;

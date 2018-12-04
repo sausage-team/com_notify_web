@@ -34,7 +34,7 @@
         <div class="audio-off" v-show="volstatus != 1" @click="setVolswitch(1)"></div>
         <div class="setting-icon" @click="signOut"></div>
         <audio id='tipAudio'>
-          <source src="../../assets/medias/notify.mp3" type="audio/mpeg">
+          <source src="../assets/medias/notify.mp3" type="audio/mpeg">
           您的浏览器不支持 audio 元素。
         </audio>
       </div>
@@ -43,9 +43,7 @@
 </template>
 
 <script>
-import service from '@/http/services/index.js'
 export default {
-  name: 'HeaderNav',
   data () {
     return {
       title: '海致数据推送中心',
@@ -57,7 +55,7 @@ export default {
   },
   methods: {
     signOut () {
-      service.userService.signOut()
+      this.userService.signOut()
         .then(res => {
           this.$cookies.remove('token')
           this.$cookies.remove('userId')
@@ -70,7 +68,7 @@ export default {
         })
     },
     setVolswitch (index) {
-      service.userService.updateSoundStatus({userSoundStatus: index}).then(res => {
+      this.userService.updateSoundStatus({userSoundStatus: index}).then(res => {
         if (res.status === 0) {
           this.volstatus = index
           localStorage.setItem('userSoundStatus', index)

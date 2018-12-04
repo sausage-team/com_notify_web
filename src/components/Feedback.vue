@@ -1,61 +1,58 @@
-<template lang='html'>
-  <div>
-    <Modal v-model="showFeedback" class="msg-detail-model">
-      <p slot="header">
-        <span>反馈信息</span>
-      </p>
-      <div class="detail-content">
-        <textarea placeholder="请输入反馈内容" maxlength="500" v-model="feedbackContent"></textarea>
+<template>
+  <Modal class="pop-modal" v-model="value">
+    <div class="pop-bg">
+      <div class="pop-window" >
+        <div class="pop-title">
+          <span>反馈</span>
+          <i class="close-btn" @click="showFeedback"></i>
+        </div>
+        <div class="pop-input">
+          <textarea v-model="feedback"  placeholder="请输入反馈内容"  maxlength="500" :class="feedback.length > 500 ? 'out-length-border' : ''"></textarea>
+        </div>
+        <div class="limit" :class="feedback.length > 500 ? 'out-length-color' : ''">最多支持500字输入</div>
+        <div class="btn-box">
+          <Button type="text" class="btn" @click="showFeedback">取消</Button>
+          <Button type="text" class="btn" @click="sendFeedback" :disabled="feedback.length > 500">确定</Button>
+        </div>
       </div>
-      <div slot="footer" class="right">
-        <button class="btn no-bg" @click="commitFeedback($event)">提交</button>
-        <button class="btn" @click="cancelFeedback($event)">取消</button>
-      </div>
-    </Modal>
-  </div>
+    </div>
+  </Modal>
 </template>
 
 <script>
 export default {
-  props: {
-    value: Boolean
-  },
+  name: 'AlarmFeedbackPop',
   data () {
     return {
-      showFeedback: false,
-      feedbackContent: ''
+      feedback: ''
     }
+  },
+  props: {
+    value: Boolean,
+    msgId: String
   },
   methods: {
-    commitFeedback () {
-      this.showFeedback = false
-    },
-    cancelFeedback () {
-      this.showFeedback = false
-    }
-  },
-  watch: {
-    value () {
-      this.showFeedback = this.value
-    },
+    // 隐藏反馈信息
     showFeedback () {
-      if (!this.showFeedback) {
-        this.$emit('input', this.showFeedback)
+      this.$emit('showFeedback')
+      this.feedback = ''
+    },
+    // 发送反馈信息
+    sendFeedback () {
+      if (!this.feedback) {
+        this.$Message.error('反馈内容不能为空')
+        return null
       }
+      this.alarmService.ackMsg({
+        id: this.msgId,
+        ack: 1,
+        ack_content: this.feedback
+      }).then(res => {
+        this.$emit('showFeedback')
+        this.$emit('refresh')
+        this.feedback = ''
+      })
     }
   }
 }
-
 </script>
-<style lang='scss' scoped>
-@import "@/assets/sass/card-detail.scss";
-textarea {
-  width: 100%;
-  height: 93px;
-  resize: none;
-  outline: none;
-  overflow: auto;
-  padding: 10px;
-  border: 1px solid rgba(41, 121, 255, 0.5);
-}
-</style>

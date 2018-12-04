@@ -60,8 +60,6 @@
 </template>
 
 <script>
-import service from '@/http/services'
-
 export default {
   name: 'AlarmSelectList',
   data () {
@@ -96,7 +94,7 @@ export default {
         })
         return
       }
-      service.alarmService.getSelector({taskId: this.taskId}).then(res => {
+      this.alarmService.getSelector({taskId: this.taskId}).then(res => {
         if (res.status === 0) {
           this.filterSchema = res.data
           this.filterSchema.forEach(item => {
@@ -113,7 +111,7 @@ export default {
     },
     // 字典详情
     getDictInfo (id) {
-      service.dicService.getDictInfo({dicId: id}).then(res => {
+      this.dicService.getDictInfo({dicId: id}).then(res => {
         this.dicList = res.data.result
       }).catch(error => {
         console.log(error)

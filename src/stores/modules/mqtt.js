@@ -1,5 +1,4 @@
 import VueCookies from 'vue-cookies'
-// import '@/lib/mqttws31.js'
 const mqtt = require('mqtt')
 const url = require('url')
 

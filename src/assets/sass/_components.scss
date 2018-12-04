@@ -1,0 +1,95 @@
+.no-card {
+  width: 360px;
+  height: 200px;
+  padding: 14px 15px 14px 15px;
+  background-color: #fff;
+  border-radius: 4px;
+  line-height: 20px;
+  cursor: pointer;
+
+  .card-header {
+    width: 100%;
+    height: 46px;
+
+    .card-title {
+      width: 100%;
+      height: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .title-box {
+        font-size: 14px;
+        white-space: nowrap;
+        color: rgba($label-title-color, 0.87);
+      }
+
+      .title-tag {
+         @include tag(rgba($tag-color, 0.15), $tag-color, 2px 8px, 4px);
+      }
+    }
+    .card-time {
+      width: 100%;
+      height: 22px;
+      color: rgba($label-title-color, 0.34);
+    }
+  }
+  .card-con {
+    font-size: 12px;
+    height: 80px;
+    @include multiple-text-ellipsis(4);
+    line-height: 20px;
+  }
+
+  .card-footer {
+    margin-top: 16px;
+  }
+}
+
+.no-filter {
+  .filter-option {
+    display: flex;
+    align-items: center;
+    >span {
+      margin-right: 4px;
+      color: rgba($label-title-color, 0.34);
+    }
+
+    .el-input__inner {
+      padding-left: 0;
+      padding-right: 0;
+      color: rgba($label-title-color, 0.72);
+      background-color: transparent;
+    }
+
+    .el-date-editor {
+      margin-right: 24px;
+
+      &.el-date-editor--datetimerange {
+        width: 360px;
+      }
+
+      .el-range__icon {
+        line-height: 19px;
+      }
+
+      .el-range-input {
+        background-color: transparent;
+      }
+
+      .el-range-separator {
+        line-height: 19px;
+      }
+
+      .el-input__prefix,
+      .el-input__suffix {
+        display: none;
+      }
+
+      .el-range__close-icon {
+        color: #fff;
+        line-height: 19px;
+      }
+    }
+  }
+}

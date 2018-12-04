@@ -96,9 +96,9 @@
         @feedback="feedback"
         @refresh="refresh"
         @closeDetail="closeDetail" />
-      <push-feedback-pop
+      <feedback
         :msgId="detailData.id"
-        :popFeed="popFeed"
+        :v-model="popFeed"
         @showFeedback="showFeedback"
         @refresh="refresh" />
       <push-select-list
@@ -113,18 +113,8 @@
 </template>
 
 <script>
-import PushSelectList from '@/pages/push/PushSelectList'
-import PushDetail from '@/pages/push/PushDetail'
-import PushFeedbackPop from '@/pages/push/PushFeedbackPop'
-import service from '@/http/services'
-
 export default {
   name: 'PushList',
-  components: {
-    PushSelectList,
-    PushDetail,
-    PushFeedbackPop
-  },
   data () {
     return {
       loading: true,
@@ -222,7 +212,7 @@ export default {
     },
     getTaskList () {
       return new Promise((resolve, reject) => {
-        service.alarmService.getMsgTaskList().then(res => {
+        this.alarmService.getMsgTaskList().then(res => {
           if (res.status === 0) {
             res.data.forEach(item => {
               if (!item.msg_count) {
@@ -251,7 +241,7 @@ export default {
     },
     chooseTag (e, item) {
       e.stopPropagation()
-      service.alarmService.readAll({
+      this.alarmService.readAll({
         task_id: item.id
       }).then(res => {
         if (res.status === 0) {
@@ -333,7 +323,7 @@ export default {
         offset: this.pageParam.offset,
         count: this.pageParam.count
       }
-      service.alarmService.getMsgDataList(params).then(res => {
+      this.alarmService.getMsgDataList(params).then(res => {
         if (res.status === 0) {
           this.msg_list = res.data.msg_list
           this.schema = res.data.schema
@@ -342,7 +332,7 @@ export default {
       })
     },
     getPushStatistics () {
-      service.alarmService.getPushStat({
+      this.alarmService.getPushStat({
         taskId: this.chooseId
       }).then(res => {
         if (res.status === 0) {
@@ -354,7 +344,7 @@ export default {
     },
     // 消息已读接口
     setReadMsg () {
-      service.alarmService.readAll({
+      this.alarmService.readAll({
         task_id: this.chooseItem.id
       }).then(res => {
         if (res.status) {

@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import login from '@/components/login'
-import main from '@/pages'
-import messages from '@/pages/message'
-import follows from '@/pages/follow'
-import pushes from '@/pages/push'
+import login from '@/pages/login'
+import main from '@/pages/main'
+import messages from '@/pages/main/message'
+import follows from '@/pages/main/follow'
+import pushes from '@/pages/main/push'
 
 Vue.use(Router)
 
@@ -20,12 +20,6 @@ export default new Router({
       name: 'main',
       component: main,
       children: [
-        // 根目录跳到消息盒子
-        {
-          path: '/',
-          name: 'messages',
-          component: messages
-        },
         // 消息盒子
         {
           path: '/messages',

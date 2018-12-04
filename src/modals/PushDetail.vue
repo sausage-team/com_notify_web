@@ -47,7 +47,6 @@
   </Drawer>
 </template>
 <script>
-import service from '@/http/services'
 export default {
   name: 'AlarmDetail',
   data () {
@@ -83,7 +82,7 @@ export default {
     },
     // 查询详细信息
     getAlarmDetail () {
-      service.alarmService.getMsgDetail({
+      this.alarmService.getMsgDetail({
         msgId: this.msgId
       }).then(res => {
         if (res.status === 0) {
@@ -102,7 +101,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        service.alarmService.ackMsg({
+        this.alarmService.ackMsg({
           id: this.msgId,
           ack: 2
         }).then(res => {

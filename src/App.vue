@@ -12,6 +12,20 @@ export default {
         this.$store.dispatch('closeSub')
       }
       this.$router.push('/login')
+    } else {
+      this.defaultRoute()
+    }
+  },
+  methods: {
+    defaultRoute () {
+      if (this.$route.matched.length === 0) {
+        this.$router.push('/messages')
+      }
+    }
+  },
+  watch: {
+    '$route' () {
+      this.defaultRoute()
     }
   }
 }

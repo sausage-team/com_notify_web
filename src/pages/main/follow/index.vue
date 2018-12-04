@@ -45,18 +45,12 @@
         </el-pagination>
       </div>
     </div>
-    <card-detail v-model="detailVisible"></card-detail>
+    <msg-detail v-model="detailVisible" />
   </div>
 </template>
 
 <script>
-import TimeTypeFilter from '@/components/TimeTypeFilter'
-import CardDetail from '@/components/CardDetail'
 export default {
-  components: {
-    TimeTypeFilter,
-    CardDetail
-  },
   data () {
     return {
       detailVisible: false,

@@ -1,71 +1,85 @@
-@import "_layout.scss";
-@import "_element.scss";
-
 .message-list {
     .btn {
-        @include btn;
-        &.no-bg {
-            background-color: unset;
-            color: $btn-main-color;
-        }
+      &.no-bg {
+        background-color: unset;
+        color: $btn-main-color;
+      }
     }
     .right {
-        float: right;
+      float: right;
     }
-    min-width: 800px;
+    width: 100%;
     height: calc(100% - 64px);
     .cards-option {
-        padding: 16px 80px 8px;
-        @include flex(space-between);
+      width: 100%;
+      height: 48px;
+      padding: 16px 0 0 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      @include flex(space-between);
+
+      .sign-option {
+        width: 300px;
+        display: flex;
+        justify-content: flex-end;
+        height: 100%;
+
+        .btn {
+          height: 100%;
+          &:nth-child(1) {
+            background-color: transparent;
+            border: 1px solid #399cff;
+            color: #399cff;
+          }
+        }
+      }
     }
     .cards-content-wrap {
-        height: calc(100% - 52px);
-        padding-bottom: 64px;
-        overflow-y: auto;
-        .cards-content {
-            height: 100%;
-            padding: 0 80px 0;
-            .card {
-                width: calc((100% - 16px)/3);
-                margin-bottom: 8px;
-                padding: 14px 8px 8px 24px;
-                background-color: #fff;
-                border-radius: 4px;
-                line-height: 20px;
-                float: left;
-                margin-right: 8px;
-                cursor: pointer;
-                &:nth-child(3n) {
-                    margin-right: 0;
-                }
-                .card-header {
-                    .name-type {
-                        @include flex(space-between);
-                        .name {
-                            color: rgba($label-title-color, 0.87);
-                            font-size: 14px;
-                            white-space: nowrap;
-                        }
-                        .tag {
-                            @include tag(rgba($tag-color, 0.15), $tag-color, 2px 8px, 4px);
-                            margin-right: 16px;
-                            white-space: nowrap;
-                        }
-                    }
-                    .time {
-                        margin-top: 4px;
-                        color: rgba($label-title-color, 0.34);
-                    }
-                }
-                .content {
-                    margin-top: 8px;
-                    height: 80px;
-                    @include multiple-text-ellipsis(4);
-                }
-                .card-footer {
-                    margin-top: 16px;
-                }
-            }
+      height: calc(100% - 56px);
+      margin-top: 8px;
+      .scroll-box {
+        width: 100%;
+        height: 100%;
+
+        .ivu-scroll-container {
+          height: 100%;
         }
+
+        .cards-content {
+          width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+
+          .card-box {
+            margin-bottom: 20px;
+
+            .card-footer {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+
+              .btn-box {
+                width: 200px;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+              }
+
+              .btn {
+                height: 30px;
+
+                &:nth-child(1) {
+                  background-color: transparent;
+                  border: 1px solid #399cff;
+                  color: #399cff;
+                }
+              }
+            }
+          }
+        }
+      }
     }
 }

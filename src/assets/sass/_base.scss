@@ -2,7 +2,8 @@
 @import '_icon.scss';
 @import '_color.scss';
 @import '_animate.scss';
-
+@import '_element.scss';
+@import '_layout.scss';
 /**
 
 	v-center  垂直居中, 需要设定容器的position
@@ -466,6 +467,10 @@ html {
 
 .gl-text:hover {
   color: rgba(10, 18, 33, 0.87);
+}
+
+.hide-op {
+  opacity: 0;
 }
 
 // 登录页密码输入框样式

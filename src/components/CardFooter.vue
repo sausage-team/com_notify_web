@@ -7,11 +7,7 @@
 </template>
 
 <script>
-import Feedback from '@/components/Feedback'
 export default {
-  components: {
-    Feedback
-  },
   data () {
     return {
       feedbackVisible: false
