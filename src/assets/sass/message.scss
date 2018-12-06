@@ -22,16 +22,6 @@
         width: 300px;
         display: flex;
         justify-content: flex-end;
-        height: 100%;
-
-        .btn {
-          height: 100%;
-          &:nth-child(1) {
-            background-color: transparent;
-            border: 1px solid #399cff;
-            color: #399cff;
-          }
-        }
       }
     }
     .cards-content-wrap {
@@ -69,12 +59,14 @@
               }
 
               .btn {
-                height: 30px;
-
                 &:nth-child(1) {
                   background-color: transparent;
                   border: 1px solid #399cff;
                   color: #399cff;
+                  &.is-disabled {
+                    color: #c0c4cc;
+                    border-color: #ebeef5;
+                  }
                 }
               }
             }

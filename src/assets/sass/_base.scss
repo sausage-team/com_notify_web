@@ -519,6 +519,29 @@ html {
   color: rgba($label-title-color, 0.42);
 }
 
+// 按钮
+.el-button {
+  padding: 7px 16px;
+  font-size: 12px;
+  &.no-bg {
+    background-color: transparent;
+    border: 1px solid #399cff;
+    color: #399cff;
+    &.is-disabled {
+      color: #c0c4cc;
+      border-color: #ebeef5;
+    }
+  }
+  &.cancel {
+    color: #c0c4cc;
+  }
+}
+// 标签
+.el-tag {
+  height: 28px;
+  line-height: 28px;
+}
+
 // 导航
 .ivu-menu-primary.ivu-menu-horizontal .ivu-menu-item.ivu-menu-item-active,
 .ivu-menu-primary.ivu-menu-horizontal .ivu-menu-item.ivu-menu-item:hover,

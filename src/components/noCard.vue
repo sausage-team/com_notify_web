@@ -1,5 +1,5 @@
 <template>
-  <div class="no-card">
+  <div class="no-card" @click="showDetail()">
     <slot name="header">
       <div class="card-header">
         <div class="card-title">
@@ -23,6 +23,11 @@
 export default {
   props: {
     msgData: Object
+  },
+  methods: {
+    showDetail (msgData) {
+      this.$emit('showDetail', this.msgData.id)
+    }
   }
 }
 </script>

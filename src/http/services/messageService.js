@@ -8,4 +8,28 @@ export default class messageService {
       }, resolve)
     })
   }
+
+  static getMessageDetail (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/msg/detail', data, resolve)
+    })
+  }
+
+  static readItem (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/msg/read/item', data, resolve)
+    })
+  }
+
+  static readAll (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/msg/read_all', data, resolve)
+    })
+  }
+
+  static signAll (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/msg/ack_all', data, resolve)
+    })
+  }
 }

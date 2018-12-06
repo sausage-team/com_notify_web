@@ -1,76 +1,80 @@
 <template lang='html'>
-  <Modal v-model="showDetail" class="msg-detail-model">
+  <Modal v-model="showModel" class="msg-detail-model">
     <p slot="header">
       <span>详情信息</span>
     </p>
     <div class="detail-content">
       <ul>
-        <li>
-          <label>消息类型</label>
-          <span>涉黄预警</span>
-        </li>
-        <li>
-          <label>推送时间</label>
-          <span>2018-10-11 17:00:05</span>
-        </li>
-        <li>
-          <label>消息内容</label>
-          <span>您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息，您有一条新消息。</span>
-        </li>
-        <li>
-          <label>其他信息</label>
-          <span>涉黄预警</span>
+        <li v-for="(item, index) in msgData.data_list" :key="index">
+          <label>{{item.name}}</label>
+          <span v-if="item.display_type === 1">{{item.value}}</span>
+          <span v-if="item.display_type === 2">
+            <a :href="item.value" target="_blank">{{item.value}}</a>
+          </span>
+          <span v-if="item.display_type === 3">
+            <img :src="item.value" style="height: 100px" />
+          </span>
         </li>
       </ul>
     </div>
     <div slot="footer" class="right">
-      <button class="btn no-bg" @click="showFeedback($event)">反馈</button>
-      <button class="btn" @click="showSign($event)">签收</button>
-      <feedback v-model="feedbackVisible"></feedback>
+      <div class="btn-box">
+        <el-button class="no-bg"
+          :disabled="msgData.ack === 1"
+          @click="showFeedback()">
+            {{(msgData.ack === 1) ? ('已反馈') : ('反馈')}}
+        </el-button>
+        <el-button type="primary" :disabled="msgData.ack > 0"
+          @click="showSign()">{{(msgData.ack === 2) ? ('已签收') : ('签收')}}
+        </el-button>
+      </div>
     </div>
   </Modal>
 </template>
 <script>
 export default {
   props: {
-    value: Boolean
+    value: Boolean,
+    msgData: Object
   },
   data () {
     return {
-      showDetail: false,
-      feedbackVisible: false
+      showModel: false
+    }
+  },
+  methods: {
+    showFeedback () {
+      this.$emit('showFeedback', this.msgData.msg_id)
+    },
+    showSign () {
+      this.$emit('showSign', this.msgData.msg_id)
+    },
+    readItem () {
+      if (this.msgData.read_status !== 1) {
+        this.messageService.readItem({
+          msg_id: this.msgData.msg_id
+        }).then(res => {
+          if (res.status === 0) {
+            this.$emit('readItem', this.msgData.msg_id)
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: '网络错误，请稍后再试'
+          })
+        })
+      }
     }
   },
   watch: {
     value () {
-      this.showDetail = this.value
+      this.showModel = this.value
     },
-    showDetail () {
-      if (!this.showDetail) {
-        this.$emit('input', this.showDetail)
+    showModel () {
+      if (!this.showModel) {
+        this.readItem()
+        this.$emit('input', this.showModel)
       }
-    },
-    showFeedback (event) {
-      event.stopPropagation()
-      this.feedbackVisible = true
-    },
-    showSign (event) {
-      event.stopPropagation()
-      this.$confirm('确定签收?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // this.$message({
-        //   type: 'success',
-        //   message: '签收成功!'
-        // })
-      }).catch(() => {
-        // this.$message({
-        //   type: 'info',
-        //   message: '已取消签收'
-        // })
-      })
     }
   }
 }

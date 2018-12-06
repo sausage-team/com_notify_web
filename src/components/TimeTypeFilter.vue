@@ -1,4 +1,4 @@
-<template lang='html'>
+<template>
   <div class="no-filter">
     <div class="filter-option">
       <span>日期筛选</span>
