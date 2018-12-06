@@ -1,10 +1,11 @@
 .no-card {
-  width: 360px;
+  width: 32%;
   height: 200px;
   padding: 14px 15px 14px 15px;
   background-color: #fff;
   border-radius: 4px;
   line-height: 20px;
+  margin-right: 2%;
   cursor: pointer;
 
   .card-header {
@@ -44,6 +45,9 @@
 
   .card-footer {
     margin-top: 16px;
+  }
+  &:nth-child(3n) {
+    margin-right: 0;
   }
 }
 

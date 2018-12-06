@@ -32,7 +32,6 @@
               </div>
             </div>
           </no-card>
-          <no-card v-if="messageData && messageData.length % 3 === 2" class="hide-op" />
         </div>
       </Scroll>
     </div>
@@ -164,6 +163,7 @@ export default {
       this.messageService.readAll({}).then(res => {
         if (res.status === 0) {
           this.searchData.page_no = 1
+          this.messageData = []
           this.search()
         } else {
           this.$Message.error(res.msg)
@@ -174,6 +174,7 @@ export default {
       this.messageService.signAll({}).then(res => {
         if (res.status === 0) {
           this.searchData.page_no = 1
+          this.messageData = []
           this.search()
         } else {
           this.$Message.error(res.msg)
