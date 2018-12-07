@@ -89,6 +89,7 @@ export default {
       }).then(res => {
         if (res.status === 0) {
           this.msgData = res.data
+          this.msgData.read_status = item.read_status
           this.detailVisible = true
         } else {
           this.$message({

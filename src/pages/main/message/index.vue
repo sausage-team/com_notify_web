@@ -67,12 +67,13 @@ export default {
     }
   },
   methods: {
-    showDetail (id) {
+    showDetail (msg) {
       this.messageService.getMessageDetail({
-        msg_id: id
+        msg_id: msg.id
       }).then(res => {
         if (res.status === 0) {
           this.msgData = res.data
+          this.msgData.read_status = msg.read_status
           this.detailVisible = true
         }
       }).catch(() => {
@@ -95,6 +96,7 @@ export default {
           item.ack = 1
         }
       })
+      this.detailVisible = false
     },
     readItem (msgId) {
       this.messageData.forEach(item => {

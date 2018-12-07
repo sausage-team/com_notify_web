@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     showDetail (msgData) {
-      this.$emit('showDetail', this.msgData.id)
+      this.$emit('showDetail', this.msgData)
     }
   }
 }
