@@ -16,7 +16,7 @@ module.exports = {
         // target: 'http://101.236.57.220:16800/',
         // target: 'http://localhost:8080',
         // target:'http://43.241.237.154:8080',
-        target:'http://192.168.2.104:8080',
+        target:'http://192.168.2.106:8081',
         changeOrigin: true
       }
     },

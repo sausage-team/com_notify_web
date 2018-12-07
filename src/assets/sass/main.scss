@@ -3,11 +3,17 @@
 @import 'login.scss';
 @import 'header.scss';
 @import 'alarm.scss';
-@import 'task.scss';
-@import 'stf.scss';
-@import 'spr.scss';
+@import "message.scss";
+@import "follow.scss";
+@import "card-detail.scss";
+@import "modal.scss";
+@import "_components.scss";
 
+
+.app,
 .main {
-    width: 100%;
     height: 100%;
+    width: 100%;
+    min-width: 756px;
+    background-color: $main-bg-color;
 }

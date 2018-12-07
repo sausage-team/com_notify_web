@@ -33,6 +33,20 @@
     }
   }
 
+  .header-con {
+    width: calc(100% - 444px);
+    .ivu-menu {
+      height: 100%;
+      line-height: unset;
+      background: unset;
+      .ivu-menu-item {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+    }
+  }
+
   .header-right {
     position: relative;
     width: 184px;
