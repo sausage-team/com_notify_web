@@ -61,9 +61,12 @@ export default {
         page_no: 1
       },
       messageData: [],
+      tmpNotice: [],
       total: 0,
       msgId: '',
-      msgData: {}
+      msgData: {},
+      tmpTimeOut: null,
+      tmpTimeOut1: null
     }
   },
   methods: {
@@ -182,10 +185,60 @@ export default {
           this.$Message.error(res.msg)
         }
       })
+    },
+    socketEvent (messageString) {
+      let message = JSON.parse(messageString)
+      this.tmpNotice.push(message)
+      this.notification(message.title)
+      if (localStorage.getItem('userSoundStatus')) {
+        if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
+          if (this.soundTimeout) {
+            clearTimeout(this.soundTimeout)
+            if (this.times >= 6) {
+              setTimeout(() => {
+                this.times = 1
+              }, 10000)
+              return
+            }
+          }
+          this.soundTimeout = setTimeout(() => {
+            document.getElementById('tipAudio').play()
+            this.search()
+            this.times++
+          }, 1000)
+        }
+      }
+      if (!this.tmpTimeOut) {
+        this.tmpTimeOut = setTimeout(() => {
+          if (this.tmpNotice.length >= 10) {
+            if (!this.tmpTimeOut1) {
+              this.tmpTimeOut1 = setTimeout(() => {
+                this.tmpNotice = []
+                clearTimeout(this.tmpTimeOut)
+                this.init()
+              }, 2000)
+            }
+          } else {
+            clearTimeout(this.tmpTimeOut)
+            this.init()
+          }
+        }, 1000)
+      }
     }
   },
   created () {
     this.search()
+    setTimeout(() => {
+      if (!this.$cookies.get('token')) {
+        if (this.$store.state.client) {
+          this.$store.dispatch('closeSub')
+        }
+      } else {
+        this.$store.dispatch('taskMqtt', (message) => {
+          this.socketEvent(message)
+        })
+      }
+    })
   }
 }
 
