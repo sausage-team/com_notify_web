@@ -1,0 +1,6 @@
+@mixin tag($bgcolor, $color, $padding, $radius) {
+    background-color: $bgcolor;
+    color: $color;
+    padding: $padding;
+    border-radius: $radius;
+}

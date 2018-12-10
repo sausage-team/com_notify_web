@@ -1,5 +1,4 @@
 import VueCookies from 'vue-cookies'
-// import '@/lib/mqttws31.js'
 const mqtt = require('mqtt')
 const url = require('url')
 
@@ -11,11 +10,7 @@ const state = {
   mqttPort: 0,
   mqttUser: '',
   mqttPassword: '',
-  clientId: '',
-  onConnectionLost: null,
-  onMessageArrived: null,
-  onConnectSuccess: null,
-  errorFailure: null
+  clientId: ''
 }
 
 const actions = {
