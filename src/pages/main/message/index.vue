@@ -229,6 +229,18 @@ export default {
     }
   },
   created () {
+    this.dicService.getDicConData({
+      type_id: 'dic_t_task_type'
+    }).then(res => {
+      if (res.status === 0) {
+        this.typeOptions.data = res.data.list.map(item => {
+          return {
+            label: item.content,
+            value: item.id
+          }
+        })
+      }
+    })
     this.search()
     setTimeout(() => {
       if (!this.$cookies.get('token')) {
