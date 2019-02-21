@@ -6,6 +6,17 @@
           <span>反馈</span>
           <i class="close-btn" @click="closeModel"></i>
         </div>
+        <div class="feed-type">
+          <span>反馈类型</span>
+          <el-select v-model="filterType">
+            <el-option
+              v-for="item in filterTypeList"
+              :key="item.id"
+              :label="item.content"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
         <div class="pop-input">
           <textarea v-model="feedback"  placeholder="请输入反馈内容"  maxlength="500" :class="feedback.length > 500 ? 'out-length-border' : ''"></textarea>
         </div>
@@ -25,12 +36,15 @@ export default {
   data () {
     return {
       feedback: '',
-      showModel: false
+      showModel: false,
+      filterTypeList: [],
+      filterType: ''
     }
   },
   props: {
     value: Boolean,
-    msgId: String
+    msgId: String,
+    tskId: String
   },
   methods: {
     // 发送反馈信息
@@ -39,8 +53,13 @@ export default {
         this.$Message.error('反馈内容不能为空')
         return null
       }
+      if (!this.filterType) {
+        this.$Message.error('反馈类型不能为空')
+        return null
+      }
       this.alarmService.ackMsg({
         id: this.msgId,
+        dic_content_id: this.filterType,
         ack: 1,
         ack_content: this.feedback
       }).then(res => {
@@ -62,9 +81,19 @@ export default {
   watch: {
     value () {
       this.showModel = this.value
+      if (this.value) {
+        this.messageService.getDicTypeList({
+          task_id: this.tskId
+        }).then(res => {
+          if (res.status === 0) {
+            this.filterTypeList = res.data
+          }
+        })
+      }
     },
     showModel () {
       if (!this.showModel) {
+        this.filterType = ''
         this.$emit('input', this.showModel)
       }
     }

@@ -24,11 +24,8 @@
               </div>
               <div class="btn-box">
                 <el-button class="no-bg"
-                  :disabled="item.ack === 1"
-                  @click="showFeedback(item.id, $event)">
-                    {{(item.ack === 1) ? ('已反馈') : ('反馈')}}
-                </el-button>
-                <el-button class="btn" type="primary" :disabled="item.ack > 0" @click="showSign(item.id, $event)">{{(item.ack === 2) ? ('已签收') : ('签收')}}</el-button>
+                  @click="showFeedback(item, $event)">反馈</el-button>
+                <el-button class="btn" type="primary" :disabled="item.ack === 2" @click="showSign(item.id, $event)">{{(item.ack === 2) ? ('已签收') : ('签收')}}</el-button>
               </div>
             </div>
           </no-card>
@@ -39,10 +36,12 @@
       :msgData="msgData"
       @showFeedback="showFeedback"
       @readItem="readItem"
+      :tsk-id="tskId"
       @showSign="showSign"
     />
     <feedback v-model="feedbackVisible"
       :msgId="msgId"
+      :tsk-id="tskId"
       @feedbackSuccess="feedbackSuccess" />
   </div>
 </template>
@@ -64,6 +63,7 @@ export default {
       tmpNotice: [],
       total: 0,
       msgId: '',
+      tskId: '',
       msgData: {},
       tmpTimeOut: null,
       tmpTimeOut1: null
@@ -71,6 +71,7 @@ export default {
   },
   methods: {
     showDetail (msg) {
+      this.tskId = msg.task_id
       this.messageService.getMessageDetail({
         msg_id: msg.id
       }).then(res => {
@@ -86,9 +87,10 @@ export default {
         })
       })
     },
-    showFeedback (msgId, e) {
+    showFeedback (item, e) {
       this.feedbackVisible = !this.feedbackVisible
-      this.msgId = msgId
+      this.msgId = item.id
+      this.tskId = item.task_id
       if (e) {
         e.stopPropagation()
       }

@@ -32,4 +32,10 @@ export default class messageService {
       Service.TEMPLATE_GET('/api/msg/ack_all', data, resolve)
     })
   }
+
+  static getDicTypeList (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/dic/task/content/list', data, resolve)
+    })
+  }
 }

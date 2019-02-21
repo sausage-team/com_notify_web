@@ -16,15 +16,38 @@
           </span>
         </li>
       </ul>
+      <div class="seq"></div>
+      <div class="filter-type-con">
+        <span>反馈信息</span>
+        <div class="filter-ul">
+          <div class="filter-item" v-for="(item, index) in msgData.feedback_list" :key="index">
+            <div class="item-box">
+              <span class="first-item">
+                <span>反馈人</span>
+                <span>{{item.feedback_user}}</span>
+              </span>
+              <span>
+                <span>反馈类型</span>
+                <span>{{item.dic_content}}</span>
+              </span>
+              <span>{{util.momentDate(item.update_time, 'date_time')}}</span>
+            </div>
+            <div class="item-box item-box1">
+              <span>
+                <span>反馈信息</span>
+                <span>{{item.content}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div slot="footer" class="right">
+    <div slot="footer" class="btn-right">
       <div class="btn-box">
         <el-button class="no-bg"
-          :disabled="msgData.ack === 1"
-          @click="showFeedback()">
-            {{(msgData.ack === 1) ? ('已反馈') : ('反馈')}}
+          @click="showFeedback()">反馈
         </el-button>
-        <el-button type="primary" :disabled="msgData.ack > 0"
+        <el-button type="primary" :disabled="msgData.ack === 2"
           @click="showSign()">{{(msgData.ack === 2) ? ('已签收') : ('签收')}}
         </el-button>
       </div>
@@ -35,7 +58,8 @@
 export default {
   props: {
     value: Boolean,
-    msgData: Object
+    msgData: Object,
+    tskId: String
   },
   data () {
     return {
@@ -44,7 +68,11 @@ export default {
   },
   methods: {
     showFeedback () {
-      this.$emit('showFeedback', this.msgData.msg_id)
+      this.$emit('showFeedback', {
+        ...this.msgData,
+        id: this.msgData.msg_id,
+        task_id: this.tskId
+      })
     },
     showSign () {
       this.$emit('showSign', this.msgData.msg_id)

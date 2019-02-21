@@ -1,6 +1,11 @@
 
 .msg-detail-model {
     width: 400px;
+
+    .ivu-modal-content {
+      background-color: #F0F2F3;
+    }
+
     .ivu-modal-header {
       padding: 14px 24px;
     }
@@ -22,12 +27,73 @@
           }
         }
       }
+      .seq {
+        width: 100%;
+        height: 1px;
+        background-color: #d7d7d7;
+      }
+      .filter-type-con {
+        padding: 10px;
+
+        & > span {
+          line-height: 30px;
+          margin-bottom: 5px;
+        }
+
+        .filter-ul {
+          width: 100%;
+          max-height: 320px;
+          background-color: #fff;
+          overflow: auto;
+
+          .filter-item {
+            width: 100%;
+            height: 80px;
+            border-bottom: 1px dotted #d7d7d7;
+            padding: 16px;
+
+            .item-box {
+              width: 100%;
+              height: 24px;
+              display: flex;
+              justify-content: space-around;
+              align-items: center;
+
+              .first-item {
+                width: 100px;
+              }
+
+              & > span {
+                & > span {
+                  &:first-child {
+                    margin-right: 5px;
+                  }
+                }
+              }
+
+              &.item-box1 {
+                & > span {
+                  text-indent: 14px;
+                }
+                justify-content: flex-start;
+              }
+            }
+          }
+        }
+      }
     }
     .ivu-modal-body {
       padding: 16px 32px 0;
     }
     .ivu-modal-footer {
       padding-top: 2px;
+
+      .btn-right {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+      }
+
       .btn {
         &.no-bg {
             background-color: unset;

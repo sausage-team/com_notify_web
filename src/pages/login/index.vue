@@ -63,34 +63,33 @@ export default {
           this.userService.signIn({
             domain: this.loginForm.domain,
             username: this.loginForm.user,
-            password: this.loginForm.password
+            password: this.loginForm.password,
+            ack_type: 'xxzx'
           }).then(res => {
-            if (res.status === 0) {
-              let data = res.data
-              this.$cookies.set('mqtt_ws', res.data.mqtt_ws)
-              this.$cookies.set('token', data.access_token)
-              this.getUserInfo()
-              if (this.$store.state.client) {
-                this.$store.dispatch('closeSub')
+            if (process.env.NODE_ENV === 'development') {
+              if (res.status === 0) {
+                if (this.$store.state.client) {
+                  this.$store.dispatch('closeSub')
+                }
+                this.$router.push('messages')
+              } else {
+                if (this.data) {
+                  this.errorMsg = this.data.msg
+                }
               }
             } else {
-              if (this.data) {
-                this.errorMsg = this.data.msg
+              if (res) {
+                if (this.$store.state.client) {
+                  this.$store.dispatch('closeSub')
+                }
+                this.$router.push('messages')
+              } else {
+                if (this.data) {
+                  this.errorMsg = this.data.msg
+                }
               }
             }
           })
-        }
-      })
-    },
-    getUserInfo () {
-      this.userService.getProfile().then(res => {
-        if (res.status === 0) {
-          let data = res.data
-          this.$cookies.set('userId', data.id)
-          this.$cookies.set('username', data.username)
-          this.$cookies.set('name', data.name)
-          this.$cookies.set('userSoundStatus', data.sound_switch)
-          this.$router.push('messages')
         }
       })
     }

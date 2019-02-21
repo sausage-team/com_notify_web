@@ -60,8 +60,7 @@
               <el-table-column fixed="right" width="80" label="反馈状态">
                 <template slot-scope="scope">
                   <div v-if="scope.row.ack === 0">{{'已发送'}}</div>
-                  <div v-else-if="scope.row.ack === 1">{{'已反馈'}}</div>
-                  <div v-else-if="scope.row.ack === 2">{{'已签收'}}</div>
+                  <div v-if="scope.row.ack !== 2">{{'已签收'}}</div>
                   <div v-else>{{''}}</div>
                 </template>
               </el-table-column>
@@ -98,6 +97,7 @@
         @closeDetail="closeDetail" />
       <feedback
         :msgId="detailData.id"
+        :tsk-id="detailData.task_id"
         :v-model="popFeed"
         @showFeedback="showFeedback"
         @refresh="refresh" />
