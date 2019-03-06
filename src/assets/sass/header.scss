@@ -33,8 +33,21 @@
     }
   }
 
+  .header-menu-btn {
+    width: 100px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    cursor: pointer;
+
+    .el-dropdown-link {
+      color: #fff;
+    }
+  }
+
   .header-con {
-    width: calc(100% - 444px);
+    width: calc(100% - 544px);
     .ivu-menu {
       height: 100%;
       line-height: unset;
@@ -56,7 +69,7 @@
     &.short {
       width: 84px;
     }
-    
+
     .header-right-setting {
       text-align: center;
       width: 200px;
@@ -82,11 +95,11 @@
           height: 22px;
         }
       }
-      
+
       .title {
         margin-right: 5px;
       }
-      
+
       .bor-seq {
         margin: 0 5px;
         height: 16px;
@@ -145,9 +158,6 @@
           line-height: 44px;
           border-bottom: 1px solid rgba(10, 19, 33, 0.12);
           display: flex;
-          .user {
-          
-          }
           .title {
             width: 55px;
             height: 100%;

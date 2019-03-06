@@ -6,7 +6,7 @@
     <div class="detail-content">
       <ul>
         <li v-for="(item, index) in msgData.data_list" :key="index">
-          <label>{{item.name}}</label>
+          <label :title="item.name">{{item.name}}</label>
           <span v-if="item.display_type === 1">{{item.value}}</span>
           <span v-if="item.display_type === 2">
             <a :href="item.value" target="_blank">{{item.value}}</a>
@@ -16,8 +16,8 @@
           </span>
         </li>
       </ul>
-      <div class="seq"></div>
-      <div class="filter-type-con">
+      <div class="seq" v-show="msgData.feedback_list && msgData.feedback_list.length > 0"></div>
+      <div class="filter-type-con" v-show="msgData.feedback_list && msgData.feedback_list.length > 0">
         <span>反馈信息</span>
         <div class="filter-ul">
           <div class="filter-item" v-for="(item, index) in msgData.feedback_list" :key="index">
@@ -59,7 +59,8 @@ export default {
   props: {
     value: Boolean,
     msgData: Object,
-    tskId: String
+    tskId: String,
+    msgItem: Object
   },
   data () {
     return {
@@ -71,7 +72,8 @@ export default {
       this.$emit('showFeedback', {
         ...this.msgData,
         id: this.msgData.msg_id,
-        task_id: this.tskId
+        task_id: this.tskId,
+        dic_type_id: this.msgItem.dic_type_id || undefined
       })
     },
     showSign () {

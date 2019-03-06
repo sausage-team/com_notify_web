@@ -7,14 +7,20 @@
 export default {
   name: 'App',
   created () {
-    if (!this.$cookies.get('token')) {
-      if (this.$store.state.client) {
-        this.$store.dispatch('closeSub')
+    this.userService.getBackUrl({
+      type: 'xx-center'
+    }).then(res => {
+      this.$store.dispatch('setUrl', res.data)
+
+      if (!this.$cookies.get('notify_data')) {
+        if (this.$store.state.client) {
+          this.$store.dispatch('closeSub')
+        }
+        this.$store.dispatch('getLogin')
+      } else {
+        this.defaultRoute()
       }
-      this.$router.push('/login')
-    } else {
-      this.defaultRoute()
-    }
+    })
   },
   methods: {
     defaultRoute () {

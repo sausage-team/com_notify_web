@@ -71,7 +71,11 @@
       margin-right: 24px;
 
       &.el-date-editor--datetimerange {
-        width: 360px;
+        width: 312px;
+
+        .el-range-input {
+          font-size: 12px;
+        }
       }
 
       .el-range__icon {

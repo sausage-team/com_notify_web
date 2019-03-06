@@ -16,13 +16,13 @@
           line-height: 20px;
           margin-bottom: 14px;
           label {
-            width: 48px;
+            width: 60px;
             color: rgba($label-title-color, 0.34);
             float: left;
             @include text-ellipsis;
           }
           span {
-            width: calc(100% - 56px);
+            width: calc(100% - 70px);
             float: right;
           }
         }

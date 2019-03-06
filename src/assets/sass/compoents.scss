@@ -303,22 +303,21 @@ th .ivu-table-cell {
   line-height: 24px !important;
 }
 
+.el-input {
+  .el-input_suffix {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .el-select__caret {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 .push-rule-page-user .el-input--small .el-input__icon {
   line-height: 24px;
-}
-
-
-// 下拉菜单箭头
-.el-select .el-input__icon {
-  background-image: url('../imgs/arrow-upmenu.png') !important;
-  background-size: 100% !important;
-  height: 16px !important;
-  width: 16px !important;
-}
-
-// 下拉菜单箭头
-.el-icon-arrow-up:before {
-  content: '' !important;
 }
 
 // 工作表-输入框

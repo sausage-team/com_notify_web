@@ -37,11 +37,13 @@
       @showFeedback="showFeedback"
       @readItem="readItem"
       :tsk-id="tskId"
+      :msg-item="messageItem"
       @showSign="showSign"
     />
     <feedback v-model="feedbackVisible"
       :msgId="msgId"
       :tsk-id="tskId"
+      :msg-data="messageItem"
       @feedbackSuccess="feedbackSuccess" />
   </div>
 </template>
@@ -65,13 +67,23 @@ export default {
       msgId: '',
       tskId: '',
       msgData: {},
+      messageItem: {},
       tmpTimeOut: null,
       tmpTimeOut1: null
     }
   },
   methods: {
+    resetSearch () {
+      this.messageData = []
+      this.searchData = {
+        page_size: 36,
+        page_no: 1
+      }
+      this.search()
+    },
     showDetail (msg) {
       this.tskId = msg.task_id
+      this.messageItem = msg
       this.messageService.getMessageDetail({
         msg_id: msg.id
       }).then(res => {
@@ -91,6 +103,7 @@ export default {
       this.feedbackVisible = !this.feedbackVisible
       this.msgId = item.id
       this.tskId = item.task_id
+      this.messageItem = item
       if (e) {
         e.stopPropagation()
       }
@@ -102,6 +115,8 @@ export default {
         }
       })
       this.detailVisible = false
+      this.messageData = []
+      this.search()
     },
     readItem (msgId) {
       this.messageData.forEach(item => {
@@ -162,6 +177,8 @@ export default {
         start: res.date ? res.date[0] : '',
         end: res.date ? res.date[1] : '',
         task_type: res.type || '',
+        feedback_status: res.feedback_status,
+        ack_status: res.ack_status,
         page_no: 1
       }
       this.search()
@@ -188,47 +205,48 @@ export default {
         }
       })
     },
-    socketEvent (messageString) {
+    socketEvent (messageString, self) {
       let message = JSON.parse(messageString)
-      this.tmpNotice.push(message)
-      this.notification(message.title)
+      self.tmpNotice.push(message)
+      self.notification(message.title)
       if (localStorage.getItem('userSoundStatus')) {
         if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
-          if (this.soundTimeout) {
-            clearTimeout(this.soundTimeout)
-            if (this.times >= 6) {
+          if (self.soundTimeout) {
+            clearTimeout(self.soundTimeout)
+            if (self.times >= 6) {
               setTimeout(() => {
-                this.times = 1
+                self.times = 1
               }, 10000)
               return
             }
           }
-          this.soundTimeout = setTimeout(() => {
+          self.soundTimeout = setTimeout(() => {
             document.getElementById('tipAudio').play()
-            this.search()
-            this.times++
+            self.resetSearch()
+            self.times++
           }, 1000)
         }
       }
-      if (!this.tmpTimeOut) {
-        this.tmpTimeOut = setTimeout(() => {
-          if (this.tmpNotice.length >= 10) {
-            if (!this.tmpTimeOut1) {
-              this.tmpTimeOut1 = setTimeout(() => {
-                this.tmpNotice = []
-                clearTimeout(this.tmpTimeOut)
-                this.init()
+      if (!self.tmpTimeOut) {
+        self.tmpTimeOut = setTimeout(() => {
+          if (self.tmpNotice.length >= 10) {
+            if (!self.tmpTimeOut1) {
+              self.tmpTimeOut1 = setTimeout(() => {
+                self.tmpNotice = []
+                clearTimeout(self.tmpTimeOut)
+                self.resetSearch()
               }, 2000)
             }
           } else {
-            clearTimeout(this.tmpTimeOut)
-            this.init()
+            clearTimeout(self.tmpTimeOut)
+            self.resetSearch()
           }
         }, 1000)
       }
     }
   },
   created () {
+    const self = this
     this.dicService.getDicConData({
       type_id: 'dic_t_task_type'
     }).then(res => {
@@ -243,13 +261,13 @@ export default {
     })
     this.search()
     setTimeout(() => {
-      if (!this.$cookies.get('token')) {
+      if (!this.$cookies.get('notify_data')) {
         if (this.$store.state.client) {
           this.$store.dispatch('closeSub')
         }
       } else {
         this.$store.dispatch('taskMqtt', (message) => {
-          this.socketEvent(message)
+          this.socketEvent(message, self)
         })
       }
     })

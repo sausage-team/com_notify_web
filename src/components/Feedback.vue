@@ -6,7 +6,7 @@
           <span>反馈</span>
           <i class="close-btn" @click="closeModel"></i>
         </div>
-        <div class="feed-type">
+        <div class="feed-type" v-if="msgData.dic_type_id">
           <span>反馈类型</span>
           <el-select v-model="filterType">
             <el-option
@@ -44,7 +44,8 @@ export default {
   props: {
     value: Boolean,
     msgId: String,
-    tskId: String
+    tskId: String,
+    msgData: Object
   },
   methods: {
     // 发送反馈信息
@@ -53,13 +54,13 @@ export default {
         this.$Message.error('反馈内容不能为空')
         return null
       }
-      if (!this.filterType) {
+      if (this.msgData.dic_type_id && !this.filterType) {
         this.$Message.error('反馈类型不能为空')
         return null
       }
       this.alarmService.ackMsg({
         id: this.msgId,
-        dic_content_id: this.filterType,
+        dic_content_id: this.filterType || undefined,
         ack: 1,
         ack_content: this.feedback
       }).then(res => {

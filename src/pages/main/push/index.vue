@@ -131,6 +131,7 @@ export default {
         id: '',
         name: ''
       },
+      msgData: {},
       popFeed: false,
       chooseItem: {},
       chooseId: '',
@@ -152,7 +153,7 @@ export default {
   created () {
     this.init()
     setTimeout(() => {
-      if (!this.$cookies.get('token')) {
+      if (!this.$cookies.get('notify_data')) {
         if (this.$store.state.client) {
           this.$store.dispatch('closeSub')
         }

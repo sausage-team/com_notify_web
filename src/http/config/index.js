@@ -1,6 +1,5 @@
 import axios from 'axios'
 import iView from 'iview'
-import router from '@/router'
 import store from '@/stores'
 import VueCookies from 'vue-cookies'
 
@@ -39,7 +38,7 @@ axios.interceptors.response.use(
     }
     if (res.status === 401 || res.status === 403) {
       store.dispatch('closeSub')
-      router.push('/login')
+      store.dispatch('getLogin')
     } else if (res.data.status !== 0) {
       iView.Message.error(res.data.msg)
     }
@@ -55,7 +54,7 @@ axios.interceptors.response.use(
     if (error.response) {
       let res = error.response
       if (res.status === 401 || res.status === 403) {
-        router.push('/login')
+        store.dispatch('getLogin')
         store.dispatch('closeSub')
       }
     } else {

@@ -34,16 +34,17 @@ const actions = {
   },
 
   taskMqtt ({state, dispatch}, hand) {
-    if (VueCookies.get('userId')) {
-      state.topic = `pc/web/${VueCookies.get('userId')}`
-      state.clientId = `web_${VueCookies.get('userId')}`
-      state.mqttUser = `${VueCookies.get('username') ? VueCookies.get('username') : 'haizhi'}`
+    if (VueCookies.get('notify_data')) {
+      const cookieData = VueCookies.get('notify_data')
+
+      state.topic = `pc/web/${cookieData.userId}`
+      state.clientId = `web_${cookieData.userId}`
+      state.mqttUser = `${cookieData.username || 'haizhi'}`
       state.mqttPassword = `${VueCookies.get('token')}`
-    }
-    if (VueCookies.get('token')) {
-      if (VueCookies.get('mqtt_ws')) {
-        state.mqttHost = VueCookies.get('mqtt_ws').split(':')[0]
-        state.mqttPort = parseInt(VueCookies.get('mqtt_ws').split(':')[1])
+
+      if (VueCookies.get('token')) {
+        state.mqttHost = (cookieData.mqtt_ws && cookieData.mqtt_ws.split(':')[0]) || ''
+        state.mqttPort = parseInt(cookieData.mqtt_ws.split(':')[1])
         if (!state.client) {
           dispatch('initClient')
           dispatch('initSubscribe').then(() => {

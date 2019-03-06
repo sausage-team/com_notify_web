@@ -24,4 +24,22 @@ export default class userService {
       Service.TEMPLATE_PUT(`/api/account/user/update_sound_status?switch=${params.userSoundStatus}`, data, resolve)
     })
   }
+
+  static getBackUrl (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/account/user/login/url', data, resolve)
+    })
+  }
+
+  static getMenuUrl (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/ucenter/generate_url', data, resolve)
+    })
+  }
+
+  static getMenuList (data) {
+    return new Promise((resolve, reject) => {
+      Service.TEMPLATE_GET('/api/ucenter/product/list', data, resolve)
+    })
+  }
 }

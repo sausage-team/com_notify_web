@@ -14,9 +14,36 @@
       <el-select
         v-model="filterSign"
         :placeholder="typeOptions.label"
+        clearable
         @change="changeFilter">
         <el-option
           v-for="item in typeOptions.data"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <span>反馈</span>
+      <el-select
+        v-model="filterStatus1"
+        placeholder="请选择反馈状态"
+        clearable
+        @change="changeFilter">
+        <el-option
+          v-for="item in CONSTANT.feedTypeList"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <span>签收</span>
+      <el-select
+        v-model="filterstatus2"
+        clearable
+        placeholder="请选择签收状态"
+        @change="changeFilter">
+        <el-option
+          v-for="item in CONSTANT.ackTypeList"
           :key="item.value"
           :label="item.label"
           :value="item.value">
@@ -34,7 +61,9 @@ export default {
   data () {
     return {
       filterTime: '',
-      filterSign: ''
+      filterSign: '',
+      filterStatus1: '',
+      filterstatus2: ''
     }
   },
   methods: {
@@ -44,6 +73,8 @@ export default {
         res.date = [this.filterTime[0].getTime(), this.filterTime[1].getTime()]
       }
       res.type = this.filterSign
+      res.feedback_status = this.filterStatus1
+      res.ack_status = this.filterstatus2
       this.$emit('changeSearch', res)
     }
   }

@@ -7,11 +7,11 @@
     <div class="login-body">
       <div class="login-body-content">
         <Form ref="loginForm" :model="loginForm" :rules="loginRules">
-          <FormItem prop="domain">
+          <!-- <FormItem prop="domain">
             <Input type="text" v-model="loginForm.domain" placeholder="请输入企业域">
                 <Icon type="ios-home-outline" slot="prepend"></Icon>
             </Input>
-          </FormItem>
+          </FormItem> -->
           <FormItem prop="user" required>
             <Input type="text" v-model="loginForm.user" placeholder="请输入用户名">
                 <Icon type="ios-person-outline" slot="prepend"></Icon>
