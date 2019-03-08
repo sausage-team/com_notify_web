@@ -11,7 +11,6 @@ export default {
       type: 'xx-center'
     }).then(res => {
       this.$store.dispatch('setUrl', res.data)
-
       if (!this.$cookies.get('notify_data')) {
         if (this.$store.state.client) {
           this.$store.dispatch('closeSub')

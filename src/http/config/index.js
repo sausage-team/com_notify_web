@@ -8,8 +8,9 @@ axios.defaults.timeout = 45000
 
 axios.interceptors.request.use(
   config => {
-    if (VueCookies.get('token')) {
-      config.headers.Authorization = 'Bearer ' + VueCookies.get('token')
+    if (VueCookies.get('no_token')) {
+      config.headers.Authorization = 'Bearer ' + VueCookies.get('no_token')
+      config.headers.user_id = VueCookies.get('no_user_id')
     }
     if (reqCount === 0) {
       iView.Spin.show()

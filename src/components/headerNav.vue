@@ -64,17 +64,19 @@ export default {
     }
   },
   created () {
-    this.userService.getMenuList().then(res => {
-      if (res.status === 0) {
-        this.menuList = res.data
-      }
-    })
+    if (this.$cookies.get('no_token')) {
+      this.userService.getMenuList().then(res => {
+        if (res.status === 0) {
+          this.menuList = res.data
+        }
+      })
+    }
   },
   methods: {
     signOut () {
       this.userService.signOut()
         .then(res => {
-          this.$cookies.remove('token')
+          this.$cookies.remove('no_token')
           this.$cookies.remove('notify_data')
           this.$router.push('/login')
           this.$store.dispatch('closeSub')

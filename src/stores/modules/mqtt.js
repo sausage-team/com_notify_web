@@ -40,9 +40,9 @@ const actions = {
       state.topic = `pc/web/${cookieData.userId}`
       state.clientId = `web_${cookieData.userId}`
       state.mqttUser = `${cookieData.username || 'haizhi'}`
-      state.mqttPassword = `${VueCookies.get('token')}`
+      state.mqttPassword = `${VueCookies.get('no_token')}`
 
-      if (VueCookies.get('token')) {
+      if (VueCookies.get('no_token')) {
         state.mqttHost = (cookieData.mqtt_ws && cookieData.mqtt_ws.split(':')[0]) || ''
         state.mqttPort = parseInt(cookieData.mqtt_ws.split(':')[1])
         if (!state.client) {

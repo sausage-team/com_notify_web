@@ -7,7 +7,11 @@
 <script>
 export default {
   created () {
-    this.defaultRoute()
+    if (this.$cookies.get('no_token')) {
+      this.defaultRoute()
+    } else {
+      this.$store.dispatch('getLogin')
+    }
   },
   methods: {
     defaultRoute () {
