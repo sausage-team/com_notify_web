@@ -15,7 +15,9 @@ export default {
         if (this.$store.state.client) {
           this.$store.dispatch('closeSub')
         }
-        this.$store.dispatch('getLogin')
+        if (this.$route.name !== 'login') {
+          this.$store.dispatch('getLogin')
+        }
       } else {
         this.defaultRoute()
       }
