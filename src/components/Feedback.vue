@@ -6,7 +6,7 @@
           <span>反馈</span>
           <i class="close-btn" @click="closeModel"></i>
         </div>
-        <div class="feed-type" v-if="msgData.dic_type_id">
+        <div class="feed-type" v-if="msgData && msgData.dic_type_id">
           <span>反馈类型</span>
           <el-select v-model="filterType">
             <el-option
@@ -54,7 +54,7 @@ export default {
         this.$Message.error('反馈内容不能为空')
         return null
       }
-      if (this.msgData.dic_type_id && !this.filterType) {
+      if (this.msgData && this.msgData.dic_type_id && !this.filterType) {
         this.$Message.error('反馈类型不能为空')
         return null
       }

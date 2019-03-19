@@ -7,7 +7,7 @@
       </div>
       <div  class="content-right"  >
         <div class="select-item" v-show="filterSchema && filterSchema.length > 0" v-for="(item, index) in filterSchema" :key = 'index'>
-          <div class="item-box item-date-time" v-if="item.display_type === 2">
+          <div class="item-box item-date-time" v-if="item.origin_type === 2">
             <div class="item-title">{{item.alias || item.name}}</div>
             <div class="item-date-box">
               <DatePicker
@@ -20,9 +20,16 @@
               </DatePicker>
             </div>
           </div>
-          <div class="item-box" v-if="item.display_type === 1">
+          <div class="item-box" v-if="item.origin_type === 0">
             <div class="item-title">{{item.alias || item.name}}</div>
-            <Input :maxlength="16" v-model="queryFilter[item.id]" :ref="item.id" class="item-input" placeholder="请输入内容"></Input>
+            <div class="input-box" v-if="item.origin_type === 0">
+              <Input class="item-input" v-model="queryFilter[item.id].min_value" placeholder="请输入最小值"></Input>
+              <Input class="item-input" v-model="queryFilter[item.id].max_value" placeholder="请输入最大值"></Input>
+            </div>
+          </div>
+          <div class="item-box" v-if="item.origin_type === 1">
+            <div class="item-title">{{item.alias || item.name}}</div>
+            <Input :maxlength="16" v-if="item.origin_type !== 0" v-model="queryFilter[item.id]" :ref="item.id" class="item-input" placeholder="请输入内容"></Input>
           </div>
           <div class="item-box" v-if="item.flag === 110">
             <div class="item-title">{{item.alias || item.name}}</div>
@@ -77,8 +84,10 @@ export default {
   },
   watch: {
     popSelect (val) {
-      if (val === true) {
+      if (val) {
         this.getSelectorList()
+      } else {
+        this.packUp()
       }
     }
   },
@@ -98,12 +107,15 @@ export default {
         if (res.status === 0) {
           this.filterSchema = res.data
           this.filterSchema.forEach(item => {
-            if (!this.queryFilter[item.id]) {
-              if (item.type === 2) {
-                this.queryFilter[item.id] = []
-              } else {
-                this.queryFilter[item.id] = ''
+            if (item.origin_type === 2) {
+              this.queryFilter[item.id] = []
+            } else if (item.origin_type === 0) {
+              this.queryFilter[item.id] = {
+                max_value: '',
+                min_value: ''
               }
+            } else {
+              this.queryFilter[item.id] = ''
             }
           })
         }
@@ -119,9 +131,30 @@ export default {
     },
     // 应用筛选
     applyFilter () {
+      const value = {}
+      this.filterSchema.forEach(item => {
+        console.log(item)
+        if (item.origin_type === 2) {
+          if (this.queryFilter[item.id] && this.queryFilter[item.id].length > 0) {
+            value[item.id] = [
+              ((this.queryFilter[item.id][0]) ? (new Date(this.queryFilter[item.id][0]).getTime()) : (null)),
+              ((this.queryFilter[item.id][1]) ? (new Date(this.queryFilter[item.id][1]).getTime()) : (null))
+            ]
+          } else {
+            value[item.id] = []
+          }
+        } else if (item.origin_type === 0) {
+          value[item.id] = {
+            max_value: this.queryFilter[item.id].max_value ? (Number(this.queryFilter[item.id].max_value) || null) : (null),
+            min_value: this.queryFilter[item.id].min_value ? (Number(this.queryFilter[item.id].min_value) || null) : (null)
+          }
+        } else {
+          value[item.id] = this.queryFilter[item.id]
+        }
+      })
       this.$emit('applyFilter', {
         schema: this.filterSchema,
-        value: this.queryFilter
+        value: value
       })
     },
     // 还原
@@ -131,7 +164,14 @@ export default {
         if (item.display_type === 2) {
           this.queryFilter[item.id] = []
         } else {
-          this.queryFilter[item.id] = ''
+          if (item.origin_type === 0) {
+            this.queryFilter[item.id] = {
+              max_value: '',
+              min_value: ''
+            }
+          } else {
+            this.queryFilter[item.id] = ''
+          }
         }
         this.$forceUpdate()
       })

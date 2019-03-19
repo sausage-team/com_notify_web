@@ -10,7 +10,7 @@ axios.interceptors.request.use(
   config => {
     if (VueCookies.get('no_token')) {
       config.headers.Authorization = 'Bearer ' + VueCookies.get('no_token')
-      config.headers.user_id = VueCookies.get('no_user_id')
+      config.headers.userId = VueCookies.get('no_user_id')
     }
     if (reqCount === 0) {
       iView.Spin.show()

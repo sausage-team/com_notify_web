@@ -53,18 +53,44 @@
 
 .no-filter {
   .filter-option {
-    display: flex;
-    align-items: center;
-    >span {
-      margin-right: 4px;
-      color: rgba($label-title-color, 0.34);
+    padding: 8px 0 0 0;
+    .filter-box {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      >span {
+        margin-right: 10px;
+        color: rgba($label-title-color, 0.34);
+      }
     }
+
 
     .el-input__inner {
       padding-left: 0;
       padding-right: 0;
       color: rgba($label-title-color, 0.72);
       background-color: transparent;
+    }
+
+    .el-input {
+      margin-right: 10px;
+      &.el-input--prefix {
+        width: 200px;
+        margin-right: 20px;
+        .el-input__inner {
+          text-indent: 20px;
+        }
+        .el-input__prefix {
+          .el-input__icon {
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+    }
+
+    .el-select {
+      margin-right: 20px;
     }
 
     .el-date-editor {

@@ -85,7 +85,7 @@ export default {
     chooseModal (e, item) {
       e.stopPropagation()
       this.userService.getMenuUrl({
-        product_name: item.name
+        product_name: item.pro_name
       }).then(res => {
         if (res.status === 0) {
           if (res.data) {

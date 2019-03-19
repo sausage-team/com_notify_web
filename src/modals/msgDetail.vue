@@ -15,6 +15,18 @@
             <img :src="item.value" style="height: 100px" />
           </span>
         </li>
+        <li v-if="msgData.ack === 2">
+          <label title="签收机构">签收机构</label>
+          <span>{{msgData.ack_department}}</span>
+        </li>
+        <li v-if="msgData.ack === 2">
+          <label title="签收人">签收人</label>
+          <span>{{msgData.ack_user_name}}</span>
+        </li>
+        <li v-if="msgData.ack === 2">
+          <label title="签收时间">签收时间</label>
+          <span>{{util.momentDate(msgData.ack_time, 'date_time')}}</span>
+        </li>
       </ul>
       <div class="seq" v-show="msgData.feedback_list && msgData.feedback_list.length > 0"></div>
       <div class="filter-type-con" v-show="msgData.feedback_list && msgData.feedback_list.length > 0">
@@ -26,11 +38,19 @@
                 <span>反馈人</span>
                 <span>{{item.feedback_user}}</span>
               </span>
+              <span>{{util.momentDate(item.update_time, 'date_time')}}</span>
+            </div>
+            <div class="item-box item-box1">
+              <span>
+                <span>反馈机构</span>
+                <span>{{item.feedback_department}}</span>
+              </span>
+            </div>
+            <div class="item-box item-box1">
               <span>
                 <span>反馈类型</span>
                 <span>{{item.dic_content}}</span>
               </span>
-              <span>{{util.momentDate(item.update_time, 'date_time')}}</span>
             </div>
             <div class="item-box item-box1">
               <span>
@@ -77,7 +97,7 @@ export default {
       })
     },
     showSign () {
-      this.$emit('showSign', this.msgData.msg_id)
+      this.$emit('showSign', this.msgData)
     },
     readItem () {
       if (this.msgData.read_status !== 1) {

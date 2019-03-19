@@ -32,7 +32,7 @@ export default class CONSTANT {
     },
     {
       label: '未反馈',
-      value: 0
+      value: 2
     }
   ]
   static ackTypeList = [
@@ -42,7 +42,7 @@ export default class CONSTANT {
     },
     {
       label: '未签收',
-      value: 0
+      value: 2
     }
   ]
 }

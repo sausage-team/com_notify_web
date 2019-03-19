@@ -316,11 +316,11 @@ export default {
       // }
     },
     // 查询预警信息
-    getDataList () {
+    getDataList (val) {
       this.pageParam.offset = (this.pageParam.pageNo - 1) * this.pageParam.count
       let params = {
         task_id: this.chooseId,
-        filter: this.queryFilter || {},
+        filter: val || this.queryFilter || {},
         offset: this.pageParam.offset,
         count: this.pageParam.count
       }
@@ -390,7 +390,7 @@ export default {
         total: 0
       }
       this.filterSchema = filter.schema
-      this.getDataList()
+      this.getDataList(filter.value || null)
     },
     // 已签收
     refresh () {

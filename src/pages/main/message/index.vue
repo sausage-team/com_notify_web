@@ -25,7 +25,7 @@
               <div class="btn-box">
                 <el-button class="no-bg"
                   @click="showFeedback(item, $event)">反馈</el-button>
-                <el-button class="btn" type="primary" :disabled="item.ack === 2" @click="showSign(item.id, $event)">{{(item.ack === 2) ? ('已签收') : ('签收')}}</el-button>
+                <el-button class="btn" type="primary" :disabled="item.ack === 2" @click="showSign(item, $event)">{{(item.ack === 2) ? ('已签收') : ('签收')}}</el-button>
               </div>
             </div>
           </no-card>
@@ -52,7 +52,7 @@ export default {
   data () {
     return {
       typeOptions: {
-        label: '任务类型',
+        label: '任务名称',
         data: this.CONSTANT.taskList
       },
       detailVisible: false,
@@ -125,34 +125,36 @@ export default {
         }
       })
     },
-    showSign (msgId, event) {
+    showSign (item, event) {
       if (event) {
         event.stopPropagation()
       }
-      this.$confirm('确定签收?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.alarmService.ackMsg({
-          id: msgId,
-          ack: 2
-        }).then(res => {
-          if (res.status === 0) {
-            this.detailVisible = false
-            this.messageData.forEach(item => {
-              if (item.id === msgId) {
-                item.ack = 2
-              }
-            })
-            this.$Message.success('签收成功')
-          } else {
-            this.$Message.error(res.msg)
-          }
+      if (item.ack !== 2) {
+        this.$confirm('确定签收?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.alarmService.ackMsg({
+            id: item.id || item.msg_id || '',
+            ack: 2
+          }).then(res => {
+            if (res.status === 0) {
+              this.detailVisible = false
+              // this.msgData.ack = 2
+              console.log(this.messageData, item)
+              this.messageData.forEach(n => {
+                if (n.id === item.msg_id || n.id === item.id) {
+                  n.ack = 2
+                }
+              })
+              this.$Message.success('签收成功')
+            } else {
+              this.$Message.error(res.msg)
+            }
+          })
         })
-      }).catch(() => {
-        this.$Message.error('网络错误，请稍后再试')
-      })
+      }
     },
     handleReachBottom () {
       if (this.messageData.length < this.total) {
@@ -177,6 +179,7 @@ export default {
         start: res.date ? res.date[0] : '',
         end: res.date ? res.date[1] : '',
         task_type: res.type || '',
+        task_name: res.task_name,
         feedback_status: res.feedback_status,
         ack_status: res.ack_status,
         page_no: 1
