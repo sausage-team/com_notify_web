@@ -78,8 +78,9 @@ export default {
         .then(res => {
           this.$cookies.remove('no_token')
           this.$cookies.remove('notify_data')
-          this.$router.push('/login')
+          // this.$router.push('/login')
           this.$store.dispatch('closeSub')
+          this.$store.dispatch('getLogin')
         })
     },
     chooseModal (e, item) {

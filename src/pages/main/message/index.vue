@@ -1,5 +1,8 @@
 <template lang='html'>
   <div class="message-list">
+    <div v-show="hasNotify" class="close-all" @click="closeAll()">
+      <i class="el-icon-error"></i>
+    </div>
     <div class="cards-option">
       <div class="filter-wrap">
         <time-type-filter :typeOptions="typeOptions" @changeSearch="changeSearch"></time-type-filter>
@@ -51,6 +54,7 @@
 export default {
   data () {
     return {
+      hasNotify: false,
       typeOptions: {
         label: '任务名称',
         data: this.CONSTANT.taskList
@@ -80,6 +84,10 @@ export default {
         page_no: 1
       }
       this.search()
+    },
+    closeAll () {
+      this.$notify.closeAll()
+      this.hasNotify = false
     },
     showDetail (msg) {
       this.tskId = msg.task_id
@@ -142,10 +150,18 @@ export default {
             if (res.status === 0) {
               this.detailVisible = false
               // this.msgData.ack = 2
-              console.log(this.messageData, item)
-              this.messageData.forEach(n => {
-                if (n.id === item.msg_id || n.id === item.id) {
-                  n.ack = 2
+              this.messageData = this.messageData.map(n => {
+                return {
+                  ...n,
+                  ack: (() => {
+                    if (n.id === item.id) {
+                      return 2
+                    } else if (n.id === item.msg_id) {
+                      return 2
+                    } else {
+                      return n.ack
+                    }
+                  })()
                 }
               })
               this.$Message.success('签收成功')
@@ -182,6 +198,7 @@ export default {
         task_name: res.task_name,
         feedback_status: res.feedback_status,
         ack_status: res.ack_status,
+        title: res.title,
         page_no: 1
       }
       this.search()
@@ -212,6 +229,34 @@ export default {
       let message = JSON.parse(messageString)
       self.tmpNotice.push(message)
       self.notification(message.title)
+      self.$notify({
+        title: '提示',
+        message: message.title,
+        duration: 0,
+        position: 'bottom-right',
+        offset: 10,
+        type: 'warning',
+        onClick: () => {
+          this.tskId = message.task_id
+          this.messageItem = message
+          this.messageService.getMessageDetail({
+            msg_id: message.id
+          }).then(res => {
+            if (res.status === 0) {
+              this.msgData = res.data
+              this.msgData.read_status = message.read_status
+              this.detailVisible = true
+            }
+          }).catch(() => {
+            this.$message({
+              type: 'error',
+              message: '网络错误，请稍后再试'
+            })
+          })
+        }
+      })
+      self.hasNotify = true
+      self.resetSearch()
       if (localStorage.getItem('userSoundStatus')) {
         if (parseInt(localStorage.getItem('userSoundStatus')) === 1) {
           if (self.soundTimeout) {
@@ -225,7 +270,6 @@ export default {
           }
           self.soundTimeout = setTimeout(() => {
             document.getElementById('tipAudio').play()
-            self.resetSearch()
             self.times++
           }, 1000)
         }
@@ -237,12 +281,10 @@ export default {
               self.tmpTimeOut1 = setTimeout(() => {
                 self.tmpNotice = []
                 clearTimeout(self.tmpTimeOut)
-                self.resetSearch()
               }, 2000)
             }
           } else {
             clearTimeout(self.tmpTimeOut)
-            self.resetSearch()
           }
         }, 1000)
       }

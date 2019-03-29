@@ -4,13 +4,16 @@
       <time-type-filter :typeOptions="typeOptions" @changeSearch="changeSearch"></time-type-filter>
     </div>
     <div class="follow-content">
+      <div class="wt-right-wm" id="wt_con">
+        <watermark dom-key="wt_con" tscl="table"></watermark>
+      </div>
       <el-table
         :data="followData"
         stripe
         height="calc(100% - 48px)">
         <el-table-column
           label="任务类型"
-          width="160">
+          width="100">
           <template slot-scope="scope">
             <span>{{CONSTANT.taskType[scope.row.task_type]}}</span>
           </template>
@@ -18,22 +21,20 @@
         <el-table-column
           prop="task_name"
           label="任务名称"
-          width="240">
+          width="140">
         </el-table-column>
         <el-table-column
           label="推送时间"
-          width="184">
+          width="200">
           <template slot-scope="scope">
             <span>{{util.momentDate(scope.row.create_time, 'date_time')}}</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="title"
-          label="推送内容"
-          width="600">
+          label="推送内容">
         </el-table-column>
         <el-table-column
-          fixed="right"
           label="操作"
           width="96">
           <template slot-scope="scope">
@@ -54,6 +55,7 @@
     <msg-detail v-model="detailVisible"
       :msgData="msgData"
       @showFeedback="showFeedback"
+      :is-follow="true"
       @showSign="showSign"
       @readItem="readItem" />
       <feedback v-model="feedbackVisible"

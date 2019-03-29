@@ -3,34 +3,41 @@
     <p slot="header">
       <span>详情信息</span>
     </p>
-    <div class="detail-content">
+    <div class="detail-content" id="msg_detail_wm">
+      <watermark dom-key="msg_detail_wm" tscl="detail"></watermark>
       <ul>
-        <li v-for="(item, index) in msgData.data_list" :key="index">
-          <label :title="item.name">{{item.name}}</label>
-          <span v-if="item.display_type === 1">{{item.value}}</span>
-          <span v-if="item.display_type === 2">
-            <a :href="item.value" target="_blank">{{item.value}}</a>
-          </span>
-          <span v-if="item.display_type === 3">
-            <img :src="item.value" style="height: 100px" />
-          </span>
+        <li class="li-item" v-for="(item, index) in msgData.data_list" :key="index">
+          <div class="item-box">
+            <label :title="item.name">{{item.name}}</label>
+            <span v-if="item.display_type === 1">{{item.value}}</span>
+            <span v-if="item.display_type === 2">
+              <a :href="item.value" target="_blank">{{item.value}}</a>
+            </span>
+            <span v-if="item.display_type === 3">
+              <img :src="item.value" style="height: 100px" />
+            </span>
+          </div>
         </li>
-        <li v-if="msgData.ack === 2">
-          <label title="签收机构">签收机构</label>
-          <span>{{msgData.ack_department}}</span>
+        <li>
+          <div class="item-box" v-if="msgData.ack === 2">
+            <label title="签收机构">签收机构</label>
+            <span>{{msgData.ack_department}}</span>
+          </div>
+          <div class="item-box" v-if="msgData.ack === 2">
+            <label title="签收人">签收人</label>
+            <span>{{msgData.ack_user_name}}</span>
+          </div>
         </li>
-        <li v-if="msgData.ack === 2">
-          <label title="签收人">签收人</label>
-          <span>{{msgData.ack_user_name}}</span>
-        </li>
-        <li v-if="msgData.ack === 2">
-          <label title="签收时间">签收时间</label>
-          <span>{{util.momentDate(msgData.ack_time, 'date_time')}}</span>
+        <li>
+          <div class="item-box">
+            <label title="签收时间">签收时间</label>
+            <span>{{util.momentDate(msgData.ack_time, 'date_time')}}</span>
+          </div>
         </li>
       </ul>
       <div class="seq" v-show="msgData.feedback_list && msgData.feedback_list.length > 0"></div>
       <div class="filter-type-con" v-show="msgData.feedback_list && msgData.feedback_list.length > 0">
-        <span>反馈信息</span>
+        <span>反馈信息(<em class="filter-font">{{msgData.feedback_list && msgData.feedback_list.length}}条</em>)</span>
         <div class="filter-ul">
           <div class="filter-item" v-for="(item, index) in msgData.feedback_list" :key="index">
             <div class="item-box">
@@ -53,16 +60,16 @@
               </span>
             </div>
             <div class="item-box item-box1">
-              <span>
+              <span class="span-con">
                 <span>反馈信息</span>
-                <span>{{item.content}}</span>
+                <span :title="item.content">{{item.content}}</span>
               </span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div slot="footer" class="btn-right">
+    <div slot="footer" v-if="!isFollow" class="btn-right">
       <div class="btn-box">
         <el-button class="no-bg"
           @click="showFeedback()">反馈
@@ -80,7 +87,8 @@ export default {
     value: Boolean,
     msgData: Object,
     tskId: String,
-    msgItem: Object
+    msgItem: Object,
+    isFollow: Boolean
   },
   data () {
     return {

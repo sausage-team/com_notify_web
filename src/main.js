@@ -10,6 +10,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'iview/dist/styles/iview.css'
 import '@/assets/sass/main.scss'
 
+/* eslint-disable */
+import './lib/js/jquery.min'
+/* eslint-enable */
+
 import router from './router'
 import store from './stores'
 import httpFilter from './http/config'
@@ -43,6 +47,7 @@ Vue.use(filter)
 
 Vue.prototype.CONSTANT = CONSTANT
 Vue.prototype.util = Utils
+Vue.prototype.$query = window.$
 
 const components = require.context('./components/', false, /\.vue$/)
 

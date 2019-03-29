@@ -1,7 +1,7 @@
 <template>
   <Drawer class="alarm-detail-drawer" v-model="popDetail">
     <div class="detail-main">
-      <div class="content-right-detail" >
+      <div class="content-right-detail" id="push_detail_wm">
         <div class="detail-title">
           <div class="title-bar"></div>
           <div class="title-con">{{taskName}}详情信息</div>
@@ -10,6 +10,7 @@
           </div>
           <div class="close-title" @click="closeDetail">关闭</div>
         </div>
+        <watermark dom-key="push_detail_wm" tscl="detail"></watermark>
         <div class="row-detail" v-for="(item, index) in alarmDetail.data_list" :key = 'index'>
           <div class="row-item" v-if="item.display_type === 1">
             <div class="row-title">

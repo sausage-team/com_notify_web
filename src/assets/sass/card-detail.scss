@@ -2,6 +2,10 @@
 .msg-detail-model {
     width: 400px;
 
+    .ivu-modal {
+      top: 30px;
+    }
+
     .ivu-modal-content {
       background-color: #F0F2F3;
     }
@@ -15,19 +19,35 @@
     }
     .detail-content {
       ul {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
         li {
+          width: 100%;
           overflow: hidden;
           line-height: 20px;
           margin-bottom: 14px;
+          display: flex;
+
+          &.li-item {
+            width: 50%;
+
+            .item-box {
+              width: 100%;
+            }
+          }
+          .item-box {
+            width: 50%;
+            display: flex;
+          }
           label {
             width: 60px;
             color: rgba($label-title-color, 0.34);
-            float: left;
+            display: inline-block;
             @include text-ellipsis;
           }
           span {
             width: calc(100% - 70px);
-            float: right;
           }
         }
       }
@@ -38,6 +58,10 @@
       }
       .filter-type-con {
         padding: 10px;
+
+        .filter-font {
+          color: #1399dc;
+        }
 
         & > span {
           line-height: 30px;
@@ -52,20 +76,22 @@
 
           .filter-item {
             width: 100%;
-            height: 130px;
             border-bottom: 1px dotted #d7d7d7;
             padding: 16px;
 
             .item-box {
               width: 100%;
-              height: 24px;
+              line-height: 24px;
               display: flex;
               justify-content: space-between;
               align-items: center;
 
               .first-item {
-                width: 100px;
+                width: 50%;
                 text-indent: 14px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
               }
 
               & > span {
@@ -77,6 +103,10 @@
               }
 
               &.item-box1 {
+
+                .span-con {
+                  width: 100%;
+                }
                 & > span {
                   text-indent: 14px;
                 }

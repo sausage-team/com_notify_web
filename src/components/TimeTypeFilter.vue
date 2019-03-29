@@ -48,6 +48,15 @@
           end-placeholder="结束日期"
           @change="changeFilter">
         </el-date-picker>
+        <span>消息内容</span>
+        <el-input
+          placeholder="请输入内容"
+          @clear="changeFilter"
+          @keyup.native="changeSearch"
+          clearable
+          v-model="title">
+          <i slot="prefix" class="el-input__icon el-icon-search"></i>
+        </el-input>
       </div>
     </div>
   </div>
@@ -63,7 +72,8 @@ export default {
       filterTime: '',
       task_name: '',
       filterStatus1: '',
-      filterstatus2: ''
+      filterstatus2: '',
+      title: ''
     }
   },
   methods: {
@@ -80,6 +90,7 @@ export default {
       res.task_name = this.task_name
       res.feedback_status = this.filterStatus1
       res.ack_status = this.filterstatus2
+      res.title = this.title
       this.$emit('changeSearch', res)
     }
   }

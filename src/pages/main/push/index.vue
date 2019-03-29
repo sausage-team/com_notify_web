@@ -41,6 +41,9 @@
         </div>
         <div class="content-left-table">
           <div class="content-left-table-inner" v-show="schema && schema.length > 0">
+            <div class="wt-right-wm" id="push_con">
+              <watermark dom-key="push_con" tscl="table"></watermark>
+            </div>
             <el-table
               width="100%"
               height="100%"
@@ -56,7 +59,11 @@
                   <span v-else>{{scope.row.detail[item.id]}}</span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" width="120" label="推送通道" prop="channel_name"></el-table-column>
+              <el-table-column fixed="right" width="120" label="推送通道">
+                <template slot-scope="scope">
+                  <div class="channal-span" :title="scope.row.channel_name">{{scope.row.channel_name}}</div>
+                </template>
+              </el-table-column>
               <el-table-column fixed="right" width="80" label="反馈状态">
                 <template slot-scope="scope">
                   <div v-if="scope.row.ack === 0">{{'已发送'}}</div>

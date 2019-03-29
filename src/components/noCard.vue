@@ -1,5 +1,6 @@
 <template>
   <div class="no-card" @click="showDetail()">
+    <watermark dom-key="no-card"></watermark>
     <slot name="header">
       <div class="card-header">
         <div class="card-title">
